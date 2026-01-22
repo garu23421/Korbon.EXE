@@ -43,11 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Обработка формы (только на странице join.html)
   const form = document.getElementById('join-form');
   if (form) {
-    // Плавное появление формы после загрузки страницы
-    setTimeout(() => {
-      document.querySelector('.join-section').classList.add('loaded');
-    }, 300);
-
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -105,14 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
           messageDiv.classList.remove('hidden', 'error');
           messageDiv.classList.add('success');
           form.reset();
-          grecaptcha.reset(); // сброс капчи
+          grecaptcha.reset();
         } else {
-          messageDiv.textContent = 'Ошибка отправки. Попробуй позже или свяжись напрямую.';
+          messageDiv.textContent = 'Ошибка отправки. Попробуй позже.';
           messageDiv.classList.remove('hidden', 'success');
           messageDiv.classList.add('error');
         }
       } catch (err) {
-        messageDiv.textContent = 'Нет связи с сервером. Проверь интернет.';
+        messageDiv.textContent = 'Нет связи с сервером.';
         messageDiv.classList.remove('hidden', 'success');
         messageDiv.classList.add('error');
         console.error(err);
