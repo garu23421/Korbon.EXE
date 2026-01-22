@@ -297,3 +297,84 @@ footer {
   position: relative;
   z-index: 5;
 }
+
+/* Тёмный фон за текстом биографии */
+.bio-wrapper {
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  padding: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 255, 157, 0.12);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+  margin: 40px 0;
+}
+
+/* Анимация появления заголовков и секций */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Свечение при наведении на заголовки */
+.glow-title {
+  transition: all 0.4s ease;
+}
+
+.glow-title:hover {
+  text-shadow: 0 0 20px var(--accent), 0 0 40px rgba(0,255,157,0.4);
+  transform: scale(1.02);
+}
+
+/* Фото персонажей с анимацией при hover */
+.character-img {
+  float: right;
+  margin: 0 0 20px 25px;
+  width: 220px;
+  border-radius: 10px;
+  border: 2px solid #222;
+  box-shadow: 0 0 20px rgba(0,255,157,0.25);
+  transition: all 0.4s ease;
+}
+
+.character-img:hover {
+  transform: scale(1.08) rotate(2deg);
+  box-shadow: 0 0 40px rgba(0,255,157,0.6);
+  border-color: var(--accent);
+}
+
+.character-img.small {
+  width: 140px;
+  margin: 0 15px 15px 0;
+  float: none;
+  display: block;
+  margin: 15px auto;
+}
+
+/* Сетка команды */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  margin: 40px 0;
+}
+
+.team-member {
+  text-align: center;
+  background: rgba(17,17,17,0.6);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #222;
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,255,157,0.2);
+  border-color: var(--accent);
+}
