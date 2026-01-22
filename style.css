@@ -2,7 +2,7 @@
   --bg: #0a0a0a;
   --card: #111111;
   --text: #e0e0e0;
-  --accent: #00ff9d;
+  --accent: #00ff9d;     /* зелёный для лейблов и акцентов */
   --danger: #ff2d55;
   --border: #222;
 }
@@ -195,14 +195,16 @@ h2 {
 }
 
 .form-group {
-  margin-bottom: 35px;
+  margin-bottom: 45px; /* больше пространства между полями */
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  color: #aaa;
-  font-size: 0.95rem;
+  margin-bottom: 10px; /* расстояние от лейбла до поля */
+  color: var(--accent); /* зелёный цвет */
+  font-size: 1.05rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0,255,157,0.3);
 }
 
 .form-group input,
@@ -242,7 +244,7 @@ h2 {
 }
 
 .captcha-group {
-  margin: 25px 0;
+  margin: 30px 0;
   text-align: center;
 }
 
