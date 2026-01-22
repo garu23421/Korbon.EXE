@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KorbonEXE — Вступить в синдикат</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google reCAPTCHA v2 -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img src="https://sun9-50.userapi.com/s/v1/ig2/Io28TKZwDEz_5JJ0CVtv2HyjjOF3BIv_1-ft6cV5bteop7FVDSL6FeECG-2GCA222PYV6vY3fXRdCaC002Kgn0EF.jpg" alt="KorbonEXE Logo">
+      </div>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="about.html">Биография</a></li>
+        <li><a href="join.html" class="active">Вступить</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="container join-section">
+    <div class="join-header">
+      <h2>Вступить в KorbonEXE</h2>
+      <p class="subtitle">Мы не берём всех. Только тех, кто может быть полезен. Заполни форму и пройди проверку.</p>
+    </div>
+
+    <div class="join-requirements">
+      <h3>Что мы ищем</h3>
+      <ul>
+        <li>Умение работать тихо и без следов</li>
+        <li>Навыки в хакерстве, вождении, силовых акциях или отмыве</li>
+        <li>Дисциплина и умение держать язык за зубами</li>
+        <li>Готовность к риску и отсутствие понтов</li>
+      </ul>
+    </div>
+
+    <form id="join-form" class="enhanced-form">
+      <div class="form-group">
+        <input type="text" id="name" name="name" required autocomplete="off">
+        <label for="name">Позывной / Имя</label>
+      </div>
+
+      <div class="form-group">
+        <select id="role" name="role" required>
+          <option value="" disabled selected>Выбери роль...</option>
+          <option value="hacker">Хакер / разведка</option>
+          <option value="driver">Водитель / пилот</option>
+          <option value="muscle">Мускул / захват</option>
+          <option value="paint">Покрасчик / маскировка</option>
+          <option value="cleaner">Чистильщик / отмыв</option>
+          <option value="other">Другое (опиши ниже)</option>
+        </select>
+        <label for="role">Желаемая роль</label>
+      </div>
+
+      <div class="form-group">
+        <textarea id="skills" name="skills" rows="5" required placeholder="Взлом камер, дрифт под 200, работа с кетамином без следов..."></textarea>
+        <label for="skills">Ключевые навыки / опыт</label>
+      </div>
+
+      <div class="form-group">
+        <textarea id="why" name="why" rows="4" required placeholder="Что ты можешь дать синдикату и что хочешь получить взамен"></textarea>
+        <label for="why">Почему именно KorbonEXE?</label>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="contact" name="contact" required autocomplete="off" placeholder="@username или +31-XXX-XXX-XXXX">
+        <label for="contact">Способ связи (Discord / Signal / номер)</label>
+      </div>
+
+      <!-- Google reCAPTCHA v2 -->
+      <div class="form-group captcha-group">
+        <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+      </div>
+
+      <button type="submit" class="submit-btn pulse-btn">
+        <span>Отправить заявку</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+
+    <div id="form-message" class="form-message hidden"></div>
+
+    <p class="form-note">
+      Заявки проверяются в течение 24–48 часов. Не спамь. Не ври. Мы видим код.
+    </p>
+  </section>
+
+  <footer>
+    <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
