@@ -46,7 +46,7 @@ body {
 }
 
 .logo-container video {
-  height: 40px;               /* высота как была у картинки */
+  height: 50px;               /* высота как была у картинки */
   width: auto;
   max-width: 70px;           /* если видео широкое — ограничь */
   filter: drop-shadow(0 0 15px var(--accent)) drop-shadow(0 0 30px rgba(0,255,157,0.4));
