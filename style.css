@@ -2,7 +2,7 @@
   --bg: #0a0a0a;
   --card: #111111;
   --text: #e0e0e0;
-  --accent: #00ff9d;     /* зелёный для лейблов и акцентов */
+  --accent: #00ff9d;
   --danger: #ff2d55;
   --border: #222;
 }
@@ -195,16 +195,29 @@ h2 {
 }
 
 .form-group {
-  margin-bottom: 45px; /* больше пространства между полями */
+  margin-bottom: 45px;
+  transition: all 0.3s ease;
+}
+
+.form-group:hover {
+  background: rgba(0,255,157,0.03);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 0 15px rgba(0,255,157,0.1);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 10px; /* расстояние от лейбла до поля */
-  color: var(--accent); /* зелёный цвет */
+  margin-bottom: 10px;
+  color: #aaa;                  /* серый в обычном состоянии */
   font-size: 1.05rem;
   font-weight: bold;
-  text-shadow: 0 0 5px rgba(0,255,157,0.3);
+  transition: all 0.3s ease;
+}
+
+.form-group:hover label {
+  color: var(--accent);         /* зелёный при наведении на блок */
+  text-shadow: 0 0 8px rgba(0,255,157,0.5);
 }
 
 .form-group input,
