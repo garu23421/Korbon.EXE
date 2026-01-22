@@ -50,9 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const messageDiv = document.getElementById('form-message');
       const originalText = submitBtn.innerHTML;
 
-      // Проверка reCAPTCHA
-      const recaptchaResponse = grecaptcha.getResponse();
-      if (!recaptchaResponse) {
+      // Проверка hCaptcha
+      const hcaptchaResponse = hcaptcha.getResponse();
+      if (!hcaptchaResponse) {
         messageDiv.textContent = 'Пройдите проверку "Я не робот"';
         messageDiv.classList.remove('hidden', 'success');
         messageDiv.classList.add('error');
@@ -71,14 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
         embeds: [{
           title: "🛡️ Новая заявка в KorbonEXE",
           color: 0x00FF9D,
-          description: "Поступила свежая заявка с проверенной капчей.",
+          description: "Поступила свежая заявка с проверенной hCaptcha.",
           fields: [
             { name: "Позывной / Имя", value: data.name || "—", inline: true },
             { name: "Желаемая роль", value: data.role || "—", inline: true },
             { name: "Ключевые навыки", value: "```" + (data.skills || "—") + "```", inline: false },
             { name: "Почему KorbonEXE?", value: "```" + (data.why || "—") + "```", inline: false },
             { name: "Связь", value: data.contact || "—", inline: true },
-            { name: "reCAPTCHA", value: "Пройдена", inline: true }
+            { name: "hCaptcha", value: "Пройдена", inline: true }
           ],
           timestamp: new Date().toISOString(),
           footer: { text: "KorbonEXE • .EXE YOUR LIMITS • " + new Date().toLocaleString('ru-RU') }
@@ -100,14 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
           messageDiv.classList.remove('hidden', 'error');
           messageDiv.classList.add('success');
           form.reset();
-          grecaptcha.reset();
+          hcaptcha.reset(); // сброс hCaptcha
         } else {
           messageDiv.textContent = 'Ошибка отправки. Попробуй позже.';
           messageDiv.classList.remove('hidden', 'success');
           messageDiv.classList.add('error');
         }
       } catch (err) {
-        messageDiv.textContent = 'Нет связи с сервером.';
+        messageDiv.textContent = 'Нет связи с сервером. Проверь интернет.';
         messageDiv.classList.remove('hidden', 'success');
         messageDiv.classList.add('error');
         console.error(err);
@@ -133,10 +133,3 @@ document.addEventListener('DOMContentLoaded', () => {
   fadeElements.forEach(el => observer.observe(el));
   galleryItems.forEach(item => observer.observe(item));
 });
-
-function onRecaptchaLoad() {
-  console.log('reCAPTCHA готова');
-  grecaptcha.render('recaptcha-container', {
-    'sitekey': '6Lee5VIsAAAAAL-k9CwUcgQaId8dxzcAhVUHrNma'
-  });
-}
