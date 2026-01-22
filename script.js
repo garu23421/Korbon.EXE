@@ -133,3 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
   fadeElements.forEach(el => observer.observe(el));
   galleryItems.forEach(item => observer.observe(item));
 });
+
+function onRecaptchaLoad() {
+  console.log('reCAPTCHA готова');
+  grecaptcha.render('recaptcha-container', {
+    'sitekey': '6Lee5VIsAAAAAL-k9CwUcgQaId8dxzcAhVUHrNma'
+  });
+}
