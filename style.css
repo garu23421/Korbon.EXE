@@ -51,6 +51,12 @@ body {
   height: 70px;
   width: auto;
   filter: drop-shadow(0 0 15px #00ff9d) drop-shadow(0 0 30px rgba(0,255,157,0.4));
+  transition: all 0.4s ease;
+}
+
+.logo-container:hover img {
+  filter: drop-shadow(0 0 30px #00ff9d) drop-shadow(0 0 60px rgba(0,204,255,0.7));
+  transform: scale(1.05);
 }
 
 .navbar ul {
@@ -71,7 +77,25 @@ body {
   text-shadow: 0 0 10px var(--accent);
 }
 
-/* Hero (главная страница) */
+/* Контент */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 25px;
+  position: relative;
+  z-index: 5;
+}
+
+h2 {
+  color: var(--accent);
+  font-size: 2.6rem;
+  margin: 50px 0 25px;
+  border-left: 6px solid var(--accent);
+  padding-left: 18px;
+  text-shadow: 0 0 15px rgba(0,255,157,0.4);
+}
+
+/* Hero (главная) */
 .hero {
   text-align: center;
   padding: 180px 20px 120px;
@@ -107,7 +131,7 @@ body {
   margin: 0 auto;
 }
 
-/* Информационные карточки (главная) */
+/* Информационные карточки */
 .main-info {
   padding: 80px 20px;
 }
@@ -159,18 +183,7 @@ body {
   font-size: 1rem;
 }
 
-/* Кнопка призыва к действию */
-.call-to-action {
-  text-align: center;
-  margin: 60px 0;
-}
-
-.call-to-action h3 {
-  font-size: 2.2rem;
-  margin-bottom: 25px;
-  color: var(--accent);
-}
-
+/* Кнопка призыва */
 .cta-btn {
   display: inline-block;
   padding: 18px 40px;
@@ -189,7 +202,7 @@ body {
   box-shadow: 0 0 40px rgba(0,255,157,0.7);
 }
 
-/* Биография (about.html) */
+/* Биография */
 .bio-wrapper {
   background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(10px);
@@ -200,7 +213,6 @@ body {
   margin: 40px 0;
 }
 
-/* Фото персонажей с анимацией */
 .character-img {
   float: right;
   margin: 0 0 20px 25px;
@@ -225,7 +237,6 @@ body {
   margin: 15px auto;
 }
 
-/* Сетка команды */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -248,7 +259,7 @@ body {
   border-color: var(--accent);
 }
 
-/* Форма (join.html) */
+/* Форма */
 .join-section {
   padding: 80px 20px;
   max-width: 900px;
