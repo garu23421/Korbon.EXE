@@ -48,7 +48,7 @@ body {
 .logo-container video {
   height: 70px;               /* высота как была у картинки */
   width: auto;
-  max-width: 250px;           /* если видео широкое — ограничь */
+  max-width: 100px;           /* если видео широкое — ограничь */
   filter: drop-shadow(0 0 15px var(--accent)) drop-shadow(0 0 30px rgba(0,255,157,0.4));
   transition: all 0.4s ease;
   object-fit: contain;        /* сохраняет пропорции */
