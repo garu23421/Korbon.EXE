@@ -71,63 +71,181 @@ body {
   text-shadow: 0 0 10px var(--accent);
 }
 
-/* Контент */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 25px;
-  position: relative;
-  z-index: 5;
-}
-
-h2 {
-  color: var(--accent);
-  font-size: 2.6rem;
-  margin: 50px 0 25px;
-  border-left: 6px solid var(--accent);
-  padding-left: 18px;
-  text-shadow: 0 0 15px rgba(0,255,157,0.4);
-}
-
+/* Hero (главная страница) */
 .hero {
   text-align: center;
-  padding: 120px 20px 80px;
+  padding: 180px 20px 120px;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hero h1 {
-  font-size: 4.5rem;
-  margin-bottom: 20px;
+.hero-content {
+  max-width: 900px;
+}
+
+.hero-title {
+  font-size: 6rem;
   color: var(--accent);
-  text-shadow: 0 0 30px var(--accent);
+  text-shadow: 0 0 40px var(--accent);
+  margin-bottom: 20px;
+  animation: glowPulse 4s ease-in-out infinite;
 }
 
-.tagline {
-  font-size: 1.8rem;
-  opacity: 0.9;
-  letter-spacing: 2px;
+.hero-tagline {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 20px;
+  letter-spacing: 4px;
 }
 
-/* Галерея */
-.gallery-grid {
+.hero-subtitle {
+  font-size: 1.4rem;
+  color: #ccc;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Информационные карточки (главная) */
+.main-info {
+  padding: 80px 20px;
+}
+
+.info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 25px;
-  padding: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
 }
 
-.gallery-item {
-  position: relative;
-  overflow: hidden;
+.info-card {
+  background: rgba(17,17,17,0.7);
   border-radius: 12px;
+  padding: 25px;
   border: 1px solid #222;
-  background: #0d0d0d;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  text-align: center;
+  transition: all 0.4s ease;
 }
 
-.gallery-item img {
+.info-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 20px 50px rgba(0,255,157,0.2);
+  border-color: var(--accent);
+}
+
+.info-img {
   width: 100%;
-  height: auto;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: all 0.4s ease;
+}
+
+.info-card:hover .info-img {
+  transform: scale(1.08);
+  box-shadow: 0 0 25px rgba(0,255,157,0.4);
+}
+
+.info-card h3 {
+  color: var(--accent);
+  margin-bottom: 15px;
+  font-size: 1.6rem;
+}
+
+.info-card p {
+  color: #ddd;
+  font-size: 1rem;
+}
+
+/* Кнопка призыва к действию */
+.call-to-action {
+  text-align: center;
+  margin: 60px 0;
+}
+
+.call-to-action h3 {
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+  color: var(--accent);
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 18px 40px;
+  background: linear-gradient(90deg, var(--accent), #00cc99);
+  color: #000;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 20px rgba(0,255,157,0.4);
+}
+
+.cta-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 40px rgba(0,255,157,0.7);
+}
+
+/* Биография (about.html) */
+.bio-wrapper {
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  padding: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 255, 157, 0.12);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+  margin: 40px 0;
+}
+
+/* Фото персонажей с анимацией */
+.character-img {
+  float: right;
+  margin: 0 0 20px 25px;
+  width: 220px;
+  border-radius: 10px;
+  border: 2px solid #222;
+  box-shadow: 0 0 20px rgba(0,255,157,0.25);
+  transition: all 0.4s ease;
+}
+
+.character-img:hover {
+  transform: scale(1.08) rotate(2deg);
+  box-shadow: 0 0 40px rgba(0,255,157,0.6);
+  border-color: var(--accent);
+}
+
+.character-img.small {
+  width: 140px;
+  margin: 0 15px 15px 0;
+  float: none;
   display: block;
+  margin: 15px auto;
+}
+
+/* Сетка команды */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  margin: 40px 0;
+}
+
+.team-member {
+  text-align: center;
+  background: rgba(17,17,17,0.6);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #222;
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,255,157,0.2);
+  border-color: var(--accent);
 }
 
 /* Форма (join.html) */
@@ -209,14 +327,14 @@ h2 {
 .form-group label {
   display: block;
   margin-bottom: 10px;
-  color: #aaa;                  /* серый в обычном состоянии */
+  color: #aaa;
   font-size: 1.05rem;
   font-weight: bold;
   transition: all 0.3s ease;
 }
 
 .form-group:hover label {
-  color: var(--accent);         /* зелёный при наведении на блок */
+  color: var(--accent);
   text-shadow: 0 0 8px rgba(0,255,157,0.5);
 }
 
@@ -298,18 +416,12 @@ footer {
   z-index: 5;
 }
 
-/* Тёмный фон за текстом биографии */
-.bio-wrapper {
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(10px);
-  padding: 50px;
-  border-radius: 16px;
-  border: 1px solid rgba(0, 255, 157, 0.12);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
-  margin: 40px 0;
+/* Анимации */
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 30px var(--accent); }
+  50% { text-shadow: 0 0 60px var(--accent), 0 0 80px rgba(0,255,157,0.6); }
 }
 
-/* Анимация появления заголовков и секций */
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -319,62 +431,4 @@ footer {
 .fade-in.visible {
   opacity: 1;
   transform: translateY(0);
-}
-
-/* Свечение при наведении на заголовки */
-.glow-title {
-  transition: all 0.4s ease;
-}
-
-.glow-title:hover {
-  text-shadow: 0 0 20px var(--accent), 0 0 40px rgba(0,255,157,0.4);
-  transform: scale(1.02);
-}
-
-/* Фото персонажей с анимацией при hover */
-.character-img {
-  float: right;
-  margin: 0 0 20px 25px;
-  width: 220px;
-  border-radius: 10px;
-  border: 2px solid #222;
-  box-shadow: 0 0 20px rgba(0,255,157,0.25);
-  transition: all 0.4s ease;
-}
-
-.character-img:hover {
-  transform: scale(1.08) rotate(2deg);
-  box-shadow: 0 0 40px rgba(0,255,157,0.6);
-  border-color: var(--accent);
-}
-
-.character-img.small {
-  width: 140px;
-  margin: 0 15px 15px 0;
-  float: none;
-  display: block;
-  margin: 15px auto;
-}
-
-/* Сетка команды */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
-  margin: 40px 0;
-}
-
-.team-member {
-  text-align: center;
-  background: rgba(17,17,17,0.6);
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid #222;
-  transition: all 0.3s ease;
-}
-
-.team-member:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(0,255,157,0.2);
-  border-color: var(--accent);
 }
