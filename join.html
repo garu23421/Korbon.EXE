@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KorbonEXE — Вступить в синдикат</title>
+  <title>KorbonEXE — Вступить</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <!-- hCaptcha скрипт -->
   <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 </head>
 <body>
@@ -14,7 +14,7 @@
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <img src="logo.jpg" alt="KorbonEXE Logo">
+        <img src="/logo.jpg" alt="KorbonEXE">
       </div>
       <ul>
         <li><a href="index.html">Главная</a></li>
@@ -61,21 +61,20 @@
       </div>
 
       <div class="form-group">
-        <label class="green-label" for="skills">Ключевые навыки / опыт (чем докажешь полезность)</label>
-        <textarea id="skills" name="skills" rows="5" required placeholder="Взлом камер, дрифт под 200, работа с кетамином без следов..."></textarea>
+        <label class="green-label" for="skills">Ключевые навыки / опыт</label>
+        <textarea id="skills" name="skills" rows="5" required></textarea>
       </div>
 
       <div class="form-group">
         <label class="green-label" for="why">Почему именно KorbonEXE?</label>
-        <textarea id="why" name="why" rows="4" required placeholder="Что ты можешь дать синдикату и что хочешь получить взамен"></textarea>
+        <textarea id="why" name="why" rows="4" required></textarea>
       </div>
 
       <div class="form-group">
-        <label class="green-label" for="contact">Способ связи (Discord / Signal / номер)</label>
-        <input type="text" id="contact" name="contact" required autocomplete="off" placeholder="@username или +31-XXX-XXX-XXXX">
+        <label class="green-label" for="contact">Способ связи</label>
+        <input type="text" id="contact" name="contact" required autocomplete="off">
       </div>
 
-      <!-- hCaptcha блок -->
       <div class="form-group captcha-group">
         <div class="h-captcha" data-sitekey="2bb428e8-9706-486a-8aac-b61a7baebdb4"></div>
       </div>
@@ -102,5 +101,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
