@@ -134,14 +134,6 @@ h2 {
 .join-section {
   padding: 80px 20px;
   max-width: 900px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s ease-out, transform 1s ease-out;
-}
-
-.join-section.loaded {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .join-header {
@@ -203,8 +195,14 @@ h2 {
 }
 
 .form-group {
-  position: relative;
   margin-bottom: 35px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #aaa;
+  font-size: 0.95rem;
 }
 
 .form-group input,
@@ -217,37 +215,14 @@ h2 {
   border-radius: 6px;
   color: var(--text);
   font-size: 1.05rem;
-  transition: all 0.3s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(0,255,157,0.25), 0 0 15px rgba(0,255,157,0.4);
+  box-shadow: 0 0 0 3px rgba(0,255,157,0.2);
   background: #111;
-}
-
-.form-group label {
-  position: absolute;
-  left: 16px;
-  top: 14px;
-  color: #777;
-  pointer-events: none;
-  transition: all 0.3s ease;
-}
-
-.form-group input:focus + label,
-.form-group input:not(:placeholder-shown) + label,
-.form-group textarea:focus + label,
-.form-group textarea:not(:placeholder-shown) + label,
-.form-group select:focus + label {
-  top: -10px;
-  left: 12px;
-  font-size: 0.85rem;
-  color: var(--accent);
-  background: var(--card);
-  padding: 0 6px;
 }
 
 .submit-btn {
@@ -264,13 +239,6 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0,255,157,0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(0,255,157,0); }
-  100% { box-shadow: 0 0 0 0 rgba(0,255,157,0); }
 }
 
 .captcha-group {
