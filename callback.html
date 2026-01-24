@@ -6,7 +6,6 @@
   <title>KorbonEXE — Callback</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -24,30 +23,28 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
-
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    const state = params.get('state');
-
-    if (state !== localStorage.getItem('oauth_state')) {
-      document.getElementById('callback-message').textContent = 'Ошибка авторизации. Попробуй снова.';
-      document.getElementById('callback-message').classList.add('error');
-      return;
-    }
-
-    // Автоматическая обработка после redirect
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        // Успешный логин — перенаправляем на профиль
-        window.location.href = 'profile.html';
-      } else {
-        document.getElementById('callback-message').textContent = 'Ошибка. Попробуй снова.';
-        document.getElementById('callback-message').classList.add('error');
+    // Замени на свои значения
+const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');      auth: {
+        persistSession: true, // Постоянная сессия
+        storage: localStorage
       }
     });
+
+    // Автоматическая обработка после redirect
+    const { data: { session } } = await supabase.auth.getSession(); // Получаем сессию из storage
+
+    if (session) {
+      // Успешный логин — перенаправляем на профиль
+      document.getElementById('callback-message').textContent = 'Авторизация успешна. Перенаправление...';
+      document.getElementById('callback-message').classList.add('success');
+      setTimeout(() => {
+        window.location.href = 'profile.html';
+      }, 2000);
+    } else {
+      document.getElementById('callback-message').textContent = 'Ошибка авторизации. Попробуй снова.';
+      document.getElementById('callback-message').classList.add('error');
+    }
   </script>
   <script src="script.js"></script>
 </body>
 </html>
-
