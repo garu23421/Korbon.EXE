@@ -23,26 +23,19 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // Замени на свои значения
-const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');      auth: {
-        persistSession: true, // Постоянная сессия
-        storage: localStorage
-      }
-    });
+    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
 
-    // Автоматическая обработка после redirect
-    const { data: { session } } = await supabase.auth.getSession(); // Получаем сессию из storage
+    // Автоматическая проверка сессии после redirect
+    const { data: { session }, error } = await supabase.auth.getSession();
 
     if (session) {
-      // Успешный логин — перенаправляем на профиль
-      document.getElementById('callback-message').textContent = 'Авторизация успешна. Перенаправление...';
+      document.getElementById('callback-message').textContent = 'Авторизация успешна! Перенаправление...';
       document.getElementById('callback-message').classList.add('success');
-      setTimeout(() => {
-        window.location.href = 'profile.html';
-      }, 2000);
+      setTimeout(() => window.location.href = 'profile.html', 2000);
     } else {
       document.getElementById('callback-message').textContent = 'Ошибка авторизации. Попробуй снова.';
       document.getElementById('callback-message').classList.add('error');
+      setTimeout(() => window.location.href = 'register.html', 3000);
     }
   </script>
   <script src="script.js"></script>
