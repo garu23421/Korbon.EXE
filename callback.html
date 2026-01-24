@@ -12,7 +12,7 @@
 
   <section class="container auth-section fade-in">
     <div class="auth-wrapper">
-      <p id="callback-message" class="auth-message">Обработка авторизации...</p>
+      <p class="auth-message success">Авторизация успешна! Закрываю окно...</p>
     </div>
   </section>
 
@@ -20,22 +20,14 @@
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
-
-    // Автоматическая проверка сессии после redirect
-    const { data: { session }, error } = await supabase.auth.getSession();
-
-    if (session) {
-      document.getElementById('callback-message').textContent = 'Авторизация успешна! Перенаправление...';
-      document.getElementById('callback-message').classList.add('success');
-      setTimeout(() => window.location.href = 'profile.html', 2000);
+  <script>
+    // Если это popup — обновляем родительскую страницу и закрываемся
+    if (window.opener) {
+      window.opener.location.reload();
+      setTimeout(() => window.close(), 1000);
     } else {
-      document.getElementById('callback-message').textContent = 'Ошибка авторизации. Попробуй снова.';
-      document.getElementById('callback-message').classList.add('error');
-      setTimeout(() => window.location.href = 'register.html', 3000);
+      // Если открыто напрямую — перенаправляем на профиль
+      window.location.href = 'profile.html';
     }
   </script>
   <script src="script.js"></script>
