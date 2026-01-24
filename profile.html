@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KorbonEXE — Профиль</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,14 +13,7 @@
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <video 
-        src="logo-video.mp4" 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        alt="KorbonEXE Logo Animation"
-      ></video>
+        <img src="/logo.jpg" alt="KorbonEXE">
       </div>
       <ul>
         <li><a href="index.html">Главная</a></li>
@@ -28,8 +21,6 @@
         <li><a href="join.html">Вступить</a></li>
         <li><a href="gallery.html">Галерея</a></li>
         <li><a href="profile.html" class="active">Профиль</a></li>
-        <li><a href="users.html">Пользователи</a></li>
-        <li><a href="chat.html">Чат</a></li>
       </ul>
     </nav>
   </header>
@@ -41,11 +32,18 @@
       <div class="profile-info">
         <img id="avatar" class="character-img" src="" alt="Аватар">
         <p>Ник: <span id="username"></span></p>
-        <p>Discord: <span id="discord"></span></p>
-        <p>Статус: <input id="status" type="text" placeholder="Введи статус"></p>
+        <p>Discord ID: <span id="discord-id"></span></p>
+        <p>Статус: <span id="status"></span></p>
       </div>
 
-      <button id="save-profile" class="submit-btn">Сохранить</button>
+      <form id="edit-form" class="enhanced-form">
+        <div class="form-group">
+          <label for="new-status">Изменить статус</label>
+          <input type="text" id="new-status" placeholder="Новый статус">
+        </div>
+        <button type="submit" class="submit-btn">Сохранить</button>
+      </form>
+
       <button id="logout" class="action-btn">Выйти</button>
     </div>
   </section>
@@ -59,21 +57,52 @@
 
     const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_ANON_KEY');
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) window.location.href = 'register.html';
+    // Проверка авторизации
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = 'register.html';
+      return;
+    }
 
-    const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
-    document.getElementById('username').textContent = user.user_metadata.full_name;
-    document.getElementById('discord').textContent = user.user_metadata.provider_id;
-    document.getElementById('avatar').src = user.user_metadata.avatar_url;
-    document.getElementById('status').value = profile.status || '';
+    const user = session.user;
 
-    document.getElementById('save-profile').addEventListener('click', async () => {
-      const status = document.getElementById('status').value;
-      await supabase.from('users').update({ status }).eq('id', user.id);
-      alert('Профиль обновлён!');
+    // Загружаем профиль из базы
+    const { data: profile, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (error || !profile) {
+      alert('Ошибка загрузки профиля');
+      return;
+    }
+
+    document.getElementById('username').textContent = profile.username;
+    document.getElementById('discord-id').textContent = profile.discord_id;
+    document.getElementById('avatar').src = profile.avatar;
+    document.getElementById('status').textContent = profile.status || 'Новобранец';
+    document.getElementById('new-status').value = profile.status || '';
+
+    // Сохранение изменений
+    document.getElementById('edit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newStatus = document.getElementById('new-status').value;
+
+      const { error } = await supabase
+        .from('users')
+        .update({ status: newStatus })
+        .eq('id', user.id);
+
+      if (error) {
+        alert('Ошибка сохранения');
+      } else {
+        document.getElementById('status').textContent = newStatus;
+        alert('Статус обновлён!');
+      }
     });
 
+    // Выход
     document.getElementById('logout').addEventListener('click', async () => {
       await supabase.auth.signOut();
       window.location.href = 'index.html';
@@ -81,5 +110,4 @@
   </script>
   <script src="script.js"></script>
 </body>
-
 </html>
