@@ -23,7 +23,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_ANON_KEY');
+    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
 
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
@@ -46,3 +46,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
