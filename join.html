@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KorbonEXE — Вступить</title>
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo-container">
+		<video 
+        src="logo-video.mp4" 
+        autoplay 
+        loop 
+        muted 
+        playsinline 
+        alt="KorbonEXE Logo Animation">
+		</video>
+      </div>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="about.html">Биография</a></li>
+        <li><a href="join.html" class="active">Вступить</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+		<li><a href="voice.html">Общение</a></li>
+<li><a href="register.html">Регистрация</a></li>
+<li><a href="profile.html">Профиль</a></li>
+<li><a href="users.html">Пользователи</a></li>
+<li><a href="chat.html">Чат</a></li>      </ul>
+    </nav>
+  </header>
+
+  <section class="container join-section">
+    <div class="join-header-wrapper fade-in">
+      <div class="join-header-content">
+        <h2>Вступить в KorbonEXE</h2>
+        <p class="subtitle">
+          Мы не берём всех.<br>
+          Только тех, кто может быть полезен.<br>
+          Заполни форму и пройди проверку.
+        </p>
+      </div>
+    </div>
+
+<div class="join-requirements fade-in">
+  <h3>Что мы ищем</h3>
+  <ul>
+    <li>Умение работать тихо и без следов</li>
+    <li>Навыки в хакерстве, вождении, силовых акциях или отмыве</li>
+    <li>Дисциплина и умение держать язык за зубами</li>
+    <li>Готовность к риску и отсутствие понтов</li>
+  </ul>
+</div>
+
+    <form id="join-form" class="enhanced-form">
+      <div class="form-group">
+        <label class="green-label" for="name">Позывной / Имя</label>
+        <input type="text" id="name" name="name" required autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label class="green-label" for="role">Желаемая роль</label>
+        <select id="role" name="role" required>
+          <option value="" disabled selected>Выбери роль...</option>
+          <option value="hacker">Хакер / разведка</option>
+          <option value="driver">Водитель / пилот</option>
+          <option value="muscle">Мускул / захват</option>
+          <option value="paint">Покрасчик / маскировка</option>
+          <option value="cleaner">Чистильщик / отмыв</option>
+          <option value="other">Другое (опиши ниже)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="green-label" for="skills">Ключевые навыки / опыт</label>
+        <textarea id="skills" name="skills" rows="5" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="green-label" for="why">Почему именно KorbonEXE?</label>
+        <textarea id="why" name="why" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="green-label" for="contact">Способ связи</label>
+        <input type="text" id="contact" name="contact" required autocomplete="off">
+      </div>
+
+      <div class="form-group captcha-group">
+        <div class="h-captcha" data-sitekey="2bb428e8-9706-486a-8aac-b61a7baebdb4"></div>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <span>Отправить заявку</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+
+   <div id="form-message" class="form-message hidden"></div>
+
+<p class="form-note center-note">
+  Заявки проверяются в течение 24–48 часов.<br>
+  Не спамь. Не ври. Мы видим код.
+</p>
+  </section>
+
+  <footer>
+    <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

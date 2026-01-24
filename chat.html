@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KorbonEXE — Чат</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img src="logo.jpg" alt="KorbonEXE">
+      </div>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="about.html">Биография</a></li>
+        <li><a href="join.html">Вступить</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="profile.html">Профиль</a></li>
+        <li><a href="users.html">Пользователи</a></li>
+        <li><a href="chat.html" class="active">Чат</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="container chat-section fade-in">
+    <div class="chat-wrapper">
+      <h2>Закрытый чат</h2>
+
+      <div class="chat-messages" id="chat-messages"></div>
+
+      <form id="chat-form" class="chat-form">
+        <input type="text" id="message" placeholder="Введите сообщение..." required>
+        <button type="submit" class="submit-btn">Отправить</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = { /* твоя config */ };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const chatDb = firebase.database().ref('chat');
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'register.html';
+      } else {
+        chatDb.on('child_added', snap => {
+          const msg = snap.val();
+          const div = document.createElement('div');
+          div.className = 'chat-message';
+          div.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
+          document.getElementById('chat-messages').appendChild(div);
+          div.scrollIntoView();
+        });
+      }
+    });
+
+    const chatForm = document.getElementById('chat-form');
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = document.getElementById('message').value;
+      if (message) {
+        chatDb.push({
+          user: auth.currentUser.displayName || 'Anonymous',
+          text: message,
+          timestamp: Date.now()
+        });
+        document.getElementById('message').value = '';
+      }
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KorbonEXE — Пользователи</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img src="logo.jpg" alt="KorbonEXE">
+      </div>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="about.html">Биография</a></li>
+        <li><a href="join.html">Вступить</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="profile.html">Профиль</a></li>
+        <li><a href="users.html" class="active">Пользователи</a></li>
+        <li><a href="chat.html">Чат</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="container users-section fade-in">
+    <div class="users-wrapper">
+      <h2>Зарегистрированные пользователи</h2>
+      <div class="users-grid" id="users-list"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = { /* твоя config */ };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'register.html';
+      } else {
+        db.collection('users').get().then(snapshot => {
+          const list = document.getElementById('users-list');
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const card = document.createElement('div');
+            card.className = 'user-card fade-in';
+            card.innerHTML = `
+              <img src="${data.avatar}" alt="${data.username}" class="character-img small">
+              <h4>${data.username}</h4>
+              <p>Status: ${data.status || 'Новобранец'}</p>
+            `;
+            list.appendChild(card);
+          });
+        });
+      }
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
