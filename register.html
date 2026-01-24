@@ -38,25 +38,22 @@
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
-  <script>
-    const discordLogin = document.getElementById('discord-login');
-    discordLogin.addEventListener('click', () => {
-      const clientId = '1464613664710590668'; // Твой Client ID из Discord App
-      const redirectUri = encodeURIComponent('https://garu23421.github.io/Korbon.EXE/callback.html');
-      const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify%20guilds`;
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-      // Открываем popup
-      const popup = window.open(oauthUrl, 'discordLogin', 'width=500,height=700,left=200,top=100');
+  const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
 
-      // Проверяем, закрылся ли popup
-      const checkClosed = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkClosed);
-          location.reload(); // Обновляем страницу для проверки сессии
-        }
-      }, 1000);
+  const discordLogin = document.getElementById('discord-login');
+  discordLogin.addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options: {
+        redirectTo: 'https://garu23421.github.io/Korbon.EXE/callback.html' // Точный URI из шага 1
+      }
     });
-  </script>
+  });
+</script>
   <script src="script.js"></script>
 </body>
 </html>
+
