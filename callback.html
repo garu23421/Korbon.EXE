@@ -3,52 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KorbonEXE — Вход</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>KorbonEXE — Callback</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
 
-  <header>
-    <nav class="navbar">
-      <div class="logo-container">
-        <img src="logo.jpg" alt="KorbonEXE">
-      </div>
-      <ul>
-        <li><a href="index.html">Главная</a></li>
-        <li><a href="about.html">Биография</a></li>
-        <li><a href="join.html">Вступить</a></li>
-        <li><a href="gallery.html">Галерея</a></li>
-        <li><a href="login.html" class="active">Вход</a></li>
-      </ul>
-    </nav>
-  </header>
-
   <section class="container auth-section fade-in">
     <div class="auth-wrapper">
-      <h2>Вход в систему</h2>
-      <p class="auth-subtitle">Введи данные для доступа</p>
-
-      <form id="login-form" class="auth-form">
-        <div class="form-group">
-          <label for="username">Позывной / Ник</label>
-          <input type="text" id="username" required placeholder="Твой ник">
-        </div>
-
-        <div class="form-group">
-          <label for="password">Пароль</label>
-          <input type="password" id="password" required placeholder="Твой пароль">
-        </div>
-
-        <button type="submit" class="submit-btn">Войти</button>
-      </form>
-
-      <p class="auth-link">
-        Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
-      </p>
-
-      <div id="login-message" class="auth-message hidden"></div>
+      <p id="callback-message" class="auth-message">Обработка авторизации...</p>
     </div>
   </section>
 
@@ -56,7 +20,29 @@
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
-  <script src="auth.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_ANON_KEY');
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+
+    if (state !== localStorage.getItem('oauth_state')) {
+      document.getElementById('callback-message').textContent = 'Ошибка авторизации. Попробуй снова.';
+      document.getElementById('callback-message').classList.add('error');
+      return;
+    }
+
+    // Здесь можно добавить серверный вызов или обработку, если нужно
+    // Для Supabase OAuth callback не требуется дополнительный код, но если есть backend - используй fetch
+
+    // Пример: перенаправление на профиль после авторизации
+    setTimeout(() => {
+      window.location.href = 'profile.html';
+    }, 2000);
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
