@@ -49,7 +49,7 @@
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'discord',
         options: {
-          redirectTo: 'https://garu23421.github.io/Korbon.EXE/profile.html' // Прямой redirect на профиль
+          redirectTo: 'https://garu23421.github.io/Korbon.EXE/profile.html' // Точный URI (проверь регистр!)
         }
       });
 
