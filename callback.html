@@ -23,7 +23,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co/', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
+    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
 
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
@@ -35,17 +35,17 @@
       return;
     }
 
-    // Здесь можно добавить серверный вызов или обработку, если нужно
-    // Для Supabase OAuth callback не требуется дополнительный код, но если есть backend - используй fetch
-
-    // Пример: перенаправление на профиль после авторизации
-    setTimeout(() => {
-      window.location.href = 'profile.html';
-    }, 2000);
+    // Автоматическая обработка после redirect
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        // Успешный логин — перенаправляем на профиль
+        window.location.href = 'profile.html';
+      } else {
+        document.getElementById('callback-message').textContent = 'Ошибка. Попробуй снова.';
+        document.getElementById('callback-message').classList.add('error');
+      }
+    });
   </script>
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
