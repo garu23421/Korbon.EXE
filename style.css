@@ -964,3 +964,57 @@ footer {
 .join-channel-btn.active:hover {
   box-shadow: 0 0 30px var(--danger);
 }
+/* Голосовые каналы — реальные */
+.voice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.voice-card {
+  background: rgba(17,17,17,0.75);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #222;
+  transition: all .4s;
+}
+
+.voice-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0,255,157,0.2);
+  border-color: var(--accent);
+}
+
+.voice-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+}
+
+.voice-card p {
+  margin-bottom: 1rem;
+  color: #ddd;
+}
+
+.locked {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.locked-text {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* Мобильная адаптация */
+max-width: 768px {
+  .voice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  iframe {
+    height: 400px !important;
+  }
+}
