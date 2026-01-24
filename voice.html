@@ -6,8 +6,6 @@
   <title>KorbonEXE — Голосовые каналы</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -15,14 +13,7 @@
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <video 
-        src="logo-video.mp4" 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        alt="KorbonEXE Logo Animation"
-      ></video>
+        <img src="/logo.jpg" alt="KorbonEXE">
       </div>
       <ul>
         <li><a href="index.html">Главная</a></li>
@@ -30,53 +21,60 @@
         <li><a href="join.html">Вступить</a></li>
         <li><a href="gallery.html">Галерея</a></li>
         <li><a href="voice.html" class="active">Голосовые</a></li>
-		<li><a href="register.html">Регистрация</a></li>
-<li><a href="profile.html">Профиль</a></li>
-<li><a href="users.html">Пользователи</a></li>
-<li><a href="chat.html">Чат</a></li>
       </ul>
     </nav>
   </header>
 
-  <section class="container voice-section">
-    <div class="voice-header fade-in">
-      <h2>Голосовые каналы</h2>
-      <p>Закрытый голосовой сервер. Подключись и общайся с членами синдиката.</p>
+  <section class="container voice-section fade-in">
+    <div class="voice-header">
+      <h2>Голосовые каналы KorbonEXE</h2>
+      <p>Подключись к каналу — микрофон и камера по желанию. Только для членов синдиката.</p>
     </div>
 
-    <div class="voice-channels">
-      <div class="channel-card fade-in">
-        <div class="channel-info">
-          <i class="fas fa-microphone"></i>
-          <h3>#Оперативный штаб</h3>
-          <span class="status online">0 подключено</span>
-        </div>
-        <div class="channel-users" id="channel-1-users"></div>
-        <button class="join-channel-btn" data-channel="operational">Подключиться</button>
+    <div class="voice-grid">
+      <!-- Канал 1 -->
+      <div class="voice-card fade-in">
+        <h3>#Оперативный штаб</h3>
+        <p>Для планирования операций</p>
+        <iframe
+          allowfullscreen="true"
+          allow="camera; microphone; fullscreen; display-capture"
+          src="https://meet.jit.si/KorbonEXE-OperationalHQ"
+          style="height: 500px; width: 100%; border: 0; border-radius: 12px;"
+        ></iframe>
       </div>
 
-      <div class="channel-card fade-in">
-        <div class="channel-info">
-          <i class="fas fa-volume-up"></i>
-          <h3>#Общий чат</h3>
-          <span class="status">0 подключено</span>
-        </div>
-        <div class="channel-users" id="channel-2-users"></div>
-        <button class="join-channel-btn" data-channel="general">Подключиться</button>
+      <!-- Канал 2 -->
+      <div class="voice-card fade-in">
+        <h3>#Общий чат</h3>
+        <p>Свободное общение</p>
+        <iframe
+          allowfullscreen="true"
+          allow="camera; microphone; fullscreen; display-capture"
+          src="https://meet.jit.si/KorbonEXE-GeneralChat"
+          style="height: 500px; width: 100%; border: 0; border-radius: 12px;"
+        ></iframe>
       </div>
 
-      <div class="channel-card fade-in">
-        <div class="channel-info">
-          <i class="fas fa-headset"></i>
-          <h3>#Музыка / Релакс</h3>
-          <span class="status">0 подключено</span>
-        </div>
-        <div class="channel-users" id="channel-3-users"></div>
-        <button class="join-channel-btn" data-channel="music">Подключиться</button>
+      <!-- Канал 3 -->
+      <div class="voice-card fade-in">
+        <h3>#Музыка / Релакс</h3>
+        <p>Чилл и музыка</p>
+        <iframe
+          allowfullscreen="true"
+          allow="camera; microphone; fullscreen; display-capture"
+          src="https://meet.jit.si/KorbonEXE-MusicRelax"
+          style="height: 500px; width: 100%; border: 0; border-radius: 12px;"
+        ></iframe>
       </div>
 
-
-    <audio id="remote-audio" autoplay></audio>
+      <!-- Закрытый канал (VIP) -->
+      <div class="voice-card locked fade-in">
+        <h3>#VIP-операции</h3>
+        <p>Доступ только для элиты (уровень 3+)</p>
+        <p class="locked-text">Запроси доступ у Гару или Энзо</p>
+      </div>
+    </div>
   </section>
 
   <footer>
@@ -84,44 +82,5 @@
   </footer>
 
   <script src="script.js"></script>
-  <script>
-    // Голосовой чат с WebRTC (PeerJS)
-    const peer = new Peer();
-    const joinBtns = document.querySelectorAll('.join-channel-btn');
-    let currentCall = null;
-
-    peer.on('open', id => console.log('ID: ' + id));
-
-    peer.on('call', call => {
-      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-        call.answer(stream);
-        call.on('stream', remoteStream => {
-          document.getElementById('remote-audio').srcObject = remoteStream;
-        });
-      });
-    });
-
-    joinBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const channel = btn.dataset.channel;
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          const call = peer.call(channel, stream);
-          call.on('stream', remoteStream => {
-            document.getElementById('remote-audio').srcObject = remoteStream;
-          });
-          currentCall = call;
-          btn.textContent = 'Отключиться';
-          btn.classList.add('active');
-          btn.onclick = () => {
-            call.close();
-            btn.textContent = 'Подключиться';
-            btn.classList.remove('active');
-          };
-        });
-      });
-    });
-  </script>
 </body>
-
-<html>
-
+</html>
