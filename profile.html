@@ -55,7 +55,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_ANON_KEY');
+    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
 
     // Проверка сессии
     const { data: { session } } = await supabase.auth.getSession();
@@ -114,3 +114,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
