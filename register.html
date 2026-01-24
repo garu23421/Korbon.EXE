@@ -53,7 +53,7 @@
 const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
     const discordLogin = document.getElementById('discord-login');
     discordLogin.addEventListener('click', async () => {
-      const redirectUri = encodeURIComponent('https://garu23421.github.io/Korbon.EXE/callback.html'); // Вставь здесь!
+      const redirectUri = encodeURIComponent('https://dirtfyjgmkzzzlclktcx.supabase.co/auth/v1/callback'); // Вставь здесь!
       await supabase.auth.signInWithOAuth({
         provider: 'discord',
         options: { redirectTo: redirectUri }
@@ -64,5 +64,6 @@ const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'eyJhb
 </body>
 
 </html>
+
 
 
