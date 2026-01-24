@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KorbonEXE — Регистрация</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -14,14 +13,7 @@
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <video 
-        src="logo-video.mp4" 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        alt="KorbonEXE Logo Animation"
-      ></video>
+        <img src="/logo.jpg" alt="KorbonEXE">
       </div>
       <ul>
         <li><a href="index.html">Главная</a></li>
@@ -29,8 +21,6 @@
         <li><a href="join.html">Вступить</a></li>
         <li><a href="gallery.html">Галерея</a></li>
         <li><a href="register.html" class="active">Регистрация</a></li>
-        <li><a href="users.html" >Пользователи</a></li>
-        <li><a href="chat.html">Чат</a></li>
       </ul>
     </nav>
   </header>
@@ -38,9 +28,9 @@
   <section class="container auth-section fade-in">
     <div class="auth-wrapper">
       <h2>Регистрация через Discord</h2>
-      <p>Авторизуйся для создания профиля</p>
+      <p>Авторизуйся через Discord для создания профиля</p>
 
-      <button id="discord-login" class="submit-btn">Войти через Discord</button>
+      <button id="discord-login" class="submit-btn">Войти через Discord (в popup)</button>
     </div>
   </section>
 
@@ -48,33 +38,25 @@
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
- <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co/', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcnRmeWpnbWt6enpsY2xrdGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjI5MjQsImV4cCI6MjA4NDgzODkyNH0.asn8nYEFYXMVLOLNX3V9tl6mHhHns838gNoH_RYOHfw');
+  <script>
     const discordLogin = document.getElementById('discord-login');
-discordLogin.addEventListener('click', async () => {
-  const redirectUri = 'https://garu23421.github.io/Korbon.EXE/callback.html'; // Без encodeURIComponent
-  await supabase.auth.signInWithOAuth({
-    provider: 'discord',
-    options: {
-      redirectTo: redirectUri
-    }
-  });
-});
+    discordLogin.addEventListener('click', () => {
+      const clientId = '1464613664710590668'; // Твой Client ID из Discord App
+      const redirectUri = encodeURIComponent('https://garu23421.github.io/Korbon.EXE/callback.html');
+      const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify%20guilds`;
+
+      // Открываем popup
+      const popup = window.open(oauthUrl, 'discordLogin', 'width=500,height=700,left=200,top=100');
+
+      // Проверяем, закрылся ли popup
+      const checkClosed = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkClosed);
+          location.reload(); // Обновляем страницу для проверки сессии
+        }
+      }, 1000);
+    });
   </script>
   <script src="script.js"></script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
