@@ -6,8 +6,10 @@
   <title>KorbonEXE — Чат</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+
+  <!-- Firebase SDK (compat-версия, работает без type="module") -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -41,7 +43,7 @@
       <button type="submit" class="submit-btn">Отправить</button>
     </form>
 
-    <button onclick="clearChat()" class="clear-chat">Очистить чат (только у тебя)</button>
+    <button onclick="clearChat()" class="clear-chat">Очистить чат (локально)</button>
   </section>
 
   <footer class="fixed-footer">
@@ -49,17 +51,18 @@
   </footer>
 
   <script>
-    // === Вставь свой Firebase config ===
-const firebaseConfig = {
-  apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
-  authDomain: "korbonchat.firebaseapp.com",
-  databaseURL: "https://korbonchat-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "korbonchat",
-  storageBucket: "korbonchat.firebasestorage.app",
-  messagingSenderId: "855813386160",
-  appId: "1:855813386160:web:9a4363e6e781e77c797075",
-  measurementId: "G-Y8VY6ZJ708"
-};
+    // Ваш Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
+      authDomain: "korbonchat.firebaseapp.com",
+      databaseURL: "https://korbonchat-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "korbonchat",
+      storageBucket: "korbonchat.firebasestorage.app",
+      messagingSenderId: "855813386160",
+      appId: "1:855813386160:web:9a4363e6e781e77c797075",
+      measurementId: "G-Y8VY6ZJ708"
+    };
+
     // Инициализация Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -77,7 +80,7 @@ const firebaseConfig = {
       div.className = 'chat-message';
       div.innerHTML = `
         <div class="message-header">
-          <strong>${msg.nick}</strong>
+          <strong>${msg.nick || 'Anonymous'}</strong>
           <small>${msg.time}</small>
         </div>
         <div class="message-text">${msg.text}</div>
@@ -115,4 +118,3 @@ const firebaseConfig = {
   <script src="script.js"></script>
 </body>
 </html>
-
