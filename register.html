@@ -27,11 +27,36 @@
 
   <section class="container auth-section fade-in">
     <div class="auth-wrapper">
-      <h2>Регистрация через Discord</h2>
-      <p>Авторизуйся через Discord для создания профиля</p>
+      <h2>Регистрация</h2>
+      <p>Создай аккаунт для доступа к профилю</p>
 
-      <button id="discord-login" class="submit-btn">Войти через Discord</button>
-      <p id="auth-message" class="auth-message hidden"></p>
+      <form id="register-form" class="enhanced-form">
+        <div class="form-group">
+          <label for="username">Позывной / Ник *</label>
+          <input type="text" id="username" required placeholder="Твой ник">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Пароль *</label>
+          <input type="password" id="password" required placeholder="Минимум 6 символов">
+        </div>
+
+        <div class="form-group">
+          <label for="discord">Discord (необязательно)</label>
+          <input type="text" id="discord" placeholder="@username#0000">
+        </div>
+
+        <div class="form-group">
+          <label for="avatar-url">Ссылка на аватар (необязательно)</label>
+          <input type="url" id="avatar-url" placeholder="https://example.com/avatar.png">
+        </div>
+
+        <button type="submit" class="submit-btn">Зарегистрироваться</button>
+      </form>
+
+      <p class="auth-link">Уже есть аккаунт? <a href="login.html">Войти</a></p>
+
+      <div id="register-message" class="auth-message hidden"></div>
     </div>
   </section>
 
@@ -39,27 +64,7 @@
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
- <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
-
-  const discordLogin = document.getElementById('discord-login');
-  discordLogin.addEventListener('click', async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'discord',
-      options: {
-        redirectTo: 'https://garu23421.github.io/korbon.exe/profile.html' // Динамически — всегда правильный домен
-      }
-    });
-
-    if (error) {
-      alert('Ошибка авторизации: ' + error.message);
-    }
-  });
-</script>
+  <script src="auth.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
-
