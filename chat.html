@@ -7,6 +7,7 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -45,7 +46,7 @@
 
     <button id="login-btn" class="submit-btn">Войти через Google</button>
     <button id="logout-btn" class="action-btn hidden">Выйти</button>
-    <button onclick="clearChat()" class="clear-chat">Очистить чат (только у тебя)</button>
+    <button onclick="clearChat()" class="clear-chat">Очистить чат (локально)</button>
   </section>
 
   <footer class="fixed-footer">
@@ -53,7 +54,7 @@
   </footer>
 
   <script>
-    // Твой config
+    // Твой config (проверь, что он актуальный)
     const firebaseConfig = {
       apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
       authDomain: "korbonchat.firebaseapp.com",
@@ -78,10 +79,10 @@
     const logoutBtn = document.getElementById('logout-btn');
     const userStatus = document.getElementById('user-status');
 
-    // === ТВОЙ UID (замени на свой) ===
-    const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';  // ← Вставь свой UID
+    // Твой UID — теперь ты модератор
+    const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';
 
-    // Слушаем авторизацию
+    // Слушаем статус входа
     auth.onAuthStateChanged((user) => {
       if (user) {
         userStatus.textContent = `Привет, ${user.displayName || user.email.split('@')[0]}`;
@@ -97,7 +98,7 @@
       }
     });
 
-    // Вход
+    // Вход через Google
     loginBtn.addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider).catch(err => {
@@ -109,11 +110,10 @@
     // Выход
     logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // Получаем сообщения + кнопка удаления только для админа
+    // Получаем сообщения + кнопка удаления только для тебя
     messagesRef.on('child_added', (snapshot) => {
       const msg = snapshot.val();
       const key = snapshot.key;
-      const isAdmin = auth.currentUser && auth.currentUser.uid === ADMIN_UID;
 
       const div = document.createElement('div');
       div.className = 'chat-message';
@@ -121,7 +121,8 @@
         <div class="message-header">
           <strong>${msg.nick || 'Anonymous'}</strong>
           <small>${msg.time}</small>
-          ${isAdmin ? `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
+          ${auth.currentUser && auth.currentUser.uid === ADMIN_UID ? 
+            `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
         </div>
         <div class="message-text">${msg.text}</div>
       `;
@@ -141,19 +142,19 @@
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       messagesRef.push({ nick, text, time }).catch(err => {
-        console.error('Ошибка отправки:', err);
+        console.error('Ошибка:', err);
         alert('Не удалось отправить');
       });
 
       messageInput.value = '';
     });
 
-    // Удаление сообщения (только админ)
+    // Удаление сообщения (только ты)
     function deleteMessage(key) {
-      if (confirm('Удалить это сообщение?')) {
+      if (confirm('Удалить это сообщение навсегда?')) {
         messagesRef.child(key).remove().catch(err => {
           console.error('Ошибка удаления:', err);
-          alert('Не удалось удалить');
+          alert('Не получилось удалить');
         });
       }
     }
