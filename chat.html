@@ -6,49 +6,6 @@
   <title>KorbonEXE — Чат</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .chat-messages {
-      height: 400px;
-      overflow-y: auto;
-      background: rgba(0,0,0,0.6);
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-    .chat-message {
-      margin: 0.5rem 0;
-      padding: 0.8rem;
-      background: rgba(0,255,157,0.1);
-      border-radius: 8px;
-    }
-    .chat-message strong {
-      color: var(--accent);
-    }
-    .chat-form {
-      display: flex;
-      gap: 1rem;
-    }
-    .chat-form input {
-      flex: 1;
-      padding: 0.8rem;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: white;
-    }
-    .chat-form button {
-      padding: 0.8rem 1.5rem;
-    }
-    .clear-chat {
-      margin-top: 1rem;
-      background: #ff2d55;
-      color: white;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -69,39 +26,46 @@
   </header>
 
   <section class="container chat-section fade-in">
-    <h2>Общий чат синдиката</h2>
+    <div class="chat-header">
+      <h2>Общий канал синдиката</h2>
+      <p>Говори. Слушай. Не выдавай.</p>
+    </div>
 
     <div id="chat-messages" class="chat-messages"></div>
 
     <form id="chat-form" class="chat-form">
-      <input type="text" id="message" placeholder="Напиши сообщение..." required>
+      <input type="text" id="nickname" placeholder="Твой ник" value="Anonymous" maxlength="20">
+      <input type="text" id="message" placeholder="Напиши сообщение..." required autocomplete="off">
       <button type="submit" class="submit-btn">Отправить</button>
     </form>
 
-    <button class="clear-chat" onclick="clearChat()">Очистить чат (для теста)</button>
+    <button onclick="clearChat()" class="clear-chat">Очистить чат</button>
   </section>
 
-  <footer>
+  <footer class="fixed-footer">
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
-  <script src="auth.js"></script>
   <script>
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
-      window.location.href = 'login.html';
-    }
-
     const messagesDiv = document.getElementById('chat-messages');
     const chatForm = document.getElementById('chat-form');
+    const nicknameInput = document.getElementById('nickname');
+    const messageInput = document.getElementById('message');
 
+    // Загрузка сообщений
     function loadMessages() {
       const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
       messagesDiv.innerHTML = '';
       messages.forEach(msg => {
         const div = document.createElement('div');
         div.className = 'chat-message';
-        div.innerHTML = `<strong>${msg.user}:</strong> ${msg.text} <small>(${msg.time})</small>`;
+        div.innerHTML = `
+          <div class="message-header">
+            <strong>${msg.nick}</strong>
+            <small>${msg.time}</small>
+          </div>
+          <div class="message-text">${msg.text}</div>
+        `;
         messagesDiv.appendChild(div);
       });
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -109,22 +73,31 @@
 
     loadMessages();
 
+    // Отправка сообщения
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const text = document.getElementById('message').value.trim();
+      const nick = nicknameInput.value.trim() || 'Anonymous';
+      const text = messageInput.value.trim();
       if (!text) return;
 
       const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
-      const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      messages.push({ user: currentUser, text, time });
+      const time = new Date().toLocaleString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+        day: '2-digit',
+        month: '2-digit'
+      });
+
+      messages.push({ nick, text, time });
       localStorage.setItem('korbonChat', JSON.stringify(messages));
 
-      document.getElementById('message').value = '';
+      messageInput.value = '';
       loadMessages();
     });
 
+    // Очистка чата
     function clearChat() {
-      if (confirm('Очистить весь чат?')) {
+      if (confirm('Очистить весь чат? Это действие нельзя отменить.')) {
         localStorage.removeItem('korbonChat');
         loadMessages();
       }
@@ -133,4 +106,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
