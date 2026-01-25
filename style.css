@@ -1270,3 +1270,52 @@ footer {
     max-height: 50vh;
   }
 }
+
+/*11111*/
+
+.chat-page {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.chat-sidebar {
+  width: 250px;
+  background: rgba(17,17,17,0.8);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #222;
+}
+
+.user-item {
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .3s;
+}
+
+.user-item:hover, .user-item.active {
+  background: rgba(0,255,157,0.15);
+  color: var(--accent);
+}
+
+.chat-main {
+  flex: 1;
+}
+
+.chat-form {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.chat-form input {
+  flex: 1;
+  padding: 0.9rem;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: white;
+}
