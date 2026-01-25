@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KorbonEXE — Чат</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,14 +13,8 @@
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <video 
-        src="logo-video.mp4" 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        alt="KorbonEXE Logo Animation"
-      ></video>      </div>
+        <img src="/logo.jpg" alt="KorbonEXE">
+      </div>
       <ul>
         <li><a href="index.html">Главная</a></li>
         <li><a href="about.html">Биография</a></li>
@@ -34,61 +28,58 @@
   </header>
 
   <section class="container chat-section fade-in">
-    <div class="chat-wrapper">
-      <h2>Закрытый чат</h2>
+    <h2>Общий чат</h2>
+    <div id="chat-messages" class="chat-messages"></div>
 
-      <div class="chat-messages" id="chat-messages"></div>
-
-      <form id="chat-form" class="chat-form">
-        <input type="text" id="message" placeholder="Введите сообщение..." required>
-        <button type="submit" class="submit-btn">Отправить</button>
-      </form>
-    </div>
+    <form id="chat-form" class="chat-form">
+      <input type="text" id="message" placeholder="Напиши сообщение..." required>
+      <button type="submit" class="submit-btn">Отправить</button>
+    </form>
   </section>
 
   <footer>
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
-  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"></script>
+  <script src="auth.js"></script>
   <script>
-    const firebaseConfig = { /* твоя config */ };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const chatDb = firebase.database().ref('chat');
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      window.location.href = 'login.html';
+    }
 
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        window.location.href = 'register.html';
-      } else {
-        chatDb.on('child_added', snap => {
-          const msg = snap.val();
-          const div = document.createElement('div');
-          div.className = 'chat-message';
-          div.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
-          document.getElementById('chat-messages').appendChild(div);
-          div.scrollIntoView();
-        });
-      }
-    });
-
+    const messagesDiv = document.getElementById('chat-messages');
     const chatForm = document.getElementById('chat-form');
+
+    // Загрузка сообщений
+    const loadMessages = () => {
+      const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
+      messagesDiv.innerHTML = '';
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'chat-message';
+        div.innerHTML = `<strong>${msg.user}:</strong> ${msg.text} <small>(${msg.time})</small>`;
+        messagesDiv.appendChild(div);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    };
+
+    loadMessages();
+
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const message = document.getElementById('message').value;
-      if (message) {
-        chatDb.push({
-          user: auth.currentUser.displayName || 'Anonymous',
-          text: message,
-          timestamp: Date.now()
-        });
-        document.getElementById('message').value = '';
-      }
+      const text = document.getElementById('message').value.trim();
+      if (!text) return;
+
+      const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
+      const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      messages.push({ user: currentUser, text, time });
+      localStorage.setItem('korbonChat', JSON.stringify(messages));
+
+      document.getElementById('message').value = '';
+      loadMessages();
     });
   </script>
   <script src="script.js"></script>
 </body>
-
 </html>
