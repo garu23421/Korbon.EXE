@@ -53,9 +53,7 @@
   <footer>
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
-    <button onclick="checkSession()">Проверить сессию (debug)</button>
-<p id="debug-session"></p>
-
+   
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -159,7 +157,18 @@
     document.getElementById('debug-session').textContent = session ? 'Сессия есть! User ID: ' + session.user.id : 'Сессии нет :(';
   }
 </script>
+  <button onclick="testSession()">Тест сессии</button>
+<p id="session-debug"></p>
+
+<script type="module">
+  async function testSession() {
+    const { data } = await supabase.auth.getSession();
+    document.getElementById('session-debug').textContent = 
+      data.session ? 'Сессия активна! User: ' + data.session.user.id : 'Сессия отсутствует';
+  }
+</script>
 </body>
 </html>
+
 
 
