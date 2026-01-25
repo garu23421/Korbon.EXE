@@ -6,6 +6,49 @@
   <title>KorbonEXE — Чат</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .chat-messages {
+      height: 400px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .chat-message {
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      background: rgba(0,255,157,0.1);
+      border-radius: 8px;
+    }
+    .chat-message strong {
+      color: var(--accent);
+    }
+    .chat-form {
+      display: flex;
+      gap: 1rem;
+    }
+    .chat-form input {
+      flex: 1;
+      padding: 0.8rem;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: white;
+    }
+    .chat-form button {
+      padding: 0.8rem 1.5rem;
+    }
+    .clear-chat {
+      margin-top: 1rem;
+      background: #ff2d55;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -28,13 +71,16 @@
   </header>
 
   <section class="container chat-section fade-in">
-    <h2>Общий чат</h2>
+    <h2>Общий чат синдиката</h2>
+
     <div id="chat-messages" class="chat-messages"></div>
 
     <form id="chat-form" class="chat-form">
       <input type="text" id="message" placeholder="Напиши сообщение..." required>
       <button type="submit" class="submit-btn">Отправить</button>
     </form>
+
+    <button class="clear-chat" onclick="clearChat()">Очистить чат (для теста)</button>
   </section>
 
   <footer>
@@ -51,8 +97,7 @@
     const messagesDiv = document.getElementById('chat-messages');
     const chatForm = document.getElementById('chat-form');
 
-    // Загрузка сообщений
-    const loadMessages = () => {
+    function loadMessages() {
       const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
       messagesDiv.innerHTML = '';
       messages.forEach(msg => {
@@ -62,7 +107,7 @@
         messagesDiv.appendChild(div);
       });
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    };
+    }
 
     loadMessages();
 
@@ -79,6 +124,13 @@
       document.getElementById('message').value = '';
       loadMessages();
     });
+
+    function clearChat() {
+      if (confirm('Очистить весь чат?')) {
+        localStorage.removeItem('korbonChat');
+        loadMessages();
+      }
+    }
   </script>
   <script src="script.js"></script>
 </body>
