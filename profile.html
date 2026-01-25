@@ -151,5 +151,15 @@
     loadProfile();
   </script>
   <script src="script.js"></script>
+  <button onclick="checkSession()">Проверить сессию (debug)</button>
+<p id="debug-session"></p>
+
+<script type="module">
+  async function checkSession() {
+    const { data: { session } } = await supabase.auth.getSession();
+    document.getElementById('debug-session').textContent = session ? 'Сессия есть! User ID: ' + session.user.id : 'Сессии нет :(';
+  }
+</script>
 </body>
 </html>
+
