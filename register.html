@@ -49,7 +49,7 @@
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'discord',
       options: {
-        redirectTo: window.location.origin + '/profile.html' // Динамически — всегда правильный домен
+        redirectTo: 'https://garu23421.github.io/korbon.exe/profile.html' // Динамически — всегда правильный домен
       }
     });
 
@@ -61,4 +61,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
