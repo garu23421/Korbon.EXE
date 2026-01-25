@@ -7,7 +7,6 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 
-  <!-- Firebase SDK (только нужные, без дубликатов) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -46,7 +45,7 @@
 
     <button id="login-btn" class="submit-btn">Войти через Google</button>
     <button id="logout-btn" class="action-btn hidden">Выйти</button>
-    <button onclick="clearChat()" class="clear-chat">Очистить чат (локально)</button>
+    <button onclick="clearChat()" class="clear-chat">Очистить чат (только у тебя)</button>
   </section>
 
   <footer class="fixed-footer">
@@ -54,7 +53,7 @@
   </footer>
 
   <script>
-    // Ваш config (проверь, что он точно такой)
+    // Твой config
     const firebaseConfig = {
       apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
       authDomain: "korbonchat.firebaseapp.com",
@@ -66,11 +65,7 @@
       measurementId: "G-Y8VY6ZJ708"
     };
 
-    // Инициализация (только один раз)
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
     const messagesRef = db.ref('korbon-chat');
@@ -83,7 +78,10 @@
     const logoutBtn = document.getElementById('logout-btn');
     const userStatus = document.getElementById('user-status');
 
-    // Слушаем статус авторизации
+    // === ТВОЙ UID (замени на свой) ===
+    const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';  // ← Вставь свой UID
+
+    // Слушаем авторизацию
     auth.onAuthStateChanged((user) => {
       if (user) {
         userStatus.textContent = `Привет, ${user.displayName || user.email.split('@')[0]}`;
@@ -102,26 +100,28 @@
     // Вход
     loginBtn.addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch((error) => {
-        console.error('Ошибка входа:', error.code, error.message);
-        alert('Ошибка входа: ' + error.message);
+      auth.signInWithPopup(provider).catch(err => {
+        console.error('Ошибка входа:', err);
+        alert('Ошибка: ' + err.message);
       });
     });
 
     // Выход
-    logoutBtn.addEventListener('click', () => {
-      auth.signOut().catch((error) => console.error('Ошибка выхода:', error));
-    });
+    logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // Получаем сообщения
+    // Получаем сообщения + кнопка удаления только для админа
     messagesRef.on('child_added', (snapshot) => {
       const msg = snapshot.val();
+      const key = snapshot.key;
+      const isAdmin = auth.currentUser && auth.currentUser.uid === ADMIN_UID;
+
       const div = document.createElement('div');
       div.className = 'chat-message';
       div.innerHTML = `
         <div class="message-header">
           <strong>${msg.nick || 'Anonymous'}</strong>
           <small>${msg.time}</small>
+          ${isAdmin ? `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
         </div>
         <div class="message-text">${msg.text}</div>
       `;
@@ -129,7 +129,7 @@
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
 
-    // Отправка
+    // Отправка сообщения
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!auth.currentUser) return alert('Сначала войди');
@@ -140,13 +140,23 @@
 
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      messagesRef.push({ nick, text, time }).catch((err) => {
+      messagesRef.push({ nick, text, time }).catch(err => {
         console.error('Ошибка отправки:', err);
-        alert('Не удалось отправить: ' + err.message);
+        alert('Не удалось отправить');
       });
 
       messageInput.value = '';
     });
+
+    // Удаление сообщения (только админ)
+    function deleteMessage(key) {
+      if (confirm('Удалить это сообщение?')) {
+        messagesRef.child(key).remove().catch(err => {
+          console.error('Ошибка удаления:', err);
+          alert('Не удалось удалить');
+        });
+      }
+    }
 
     // Локальная очистка
     function clearChat() {
