@@ -1,4 +1,4 @@
-// auth.js — простая регистрация и профиль на localStorage
+// auth.js — регистрация, вход, профиль с загрузкой аватара
 
 const registerForm = document.getElementById('register-form');
 const loginForm = document.getElementById('login-form');
@@ -76,26 +76,41 @@ if (editForm) {
     document.getElementById('avatar-preview').src = user.avatar;
 
     document.getElementById('new-status').value = user.status;
-    document.getElementById('new-avatar').value = user.avatar === '/default-avatar.png' ? '' : user.avatar;
+    document.getElementById('avatar-url').value = user.avatar.startsWith('data:') ? '' : user.avatar;
   }
 
   editForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const newStatus = document.getElementById('new-status').value.trim() || 'Новобранец';
-    const newAvatar = document.getElementById('new-avatar').value.trim() || '/default-avatar.png';
+    let newAvatar = document.getElementById('avatar-url').value.trim();
 
-    user.status = newStatus;
-    user.avatar = newAvatar;
+    // Если выбран файл — используем base64
+    const fileInput = document.getElementById('avatar-file');
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        newAvatar = event.target.result; // base64 строка
+        saveProfile(newStatus, newAvatar);
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      saveProfile(newStatus, newAvatar);
+    }
+  });
+
+  function saveProfile(status, avatar) {
+    user.status = status;
+    user.avatar = avatar || '/default-avatar.png';
 
     users[currentUser] = user;
     localStorage.setItem('korbonUsers', JSON.stringify(users));
 
-    document.getElementById('status-display').textContent = newStatus;
-    document.getElementById('avatar-preview').src = newAvatar;
+    document.getElementById('status-display').textContent = status;
+    document.getElementById('avatar-preview').src = avatar || '/default-avatar.png';
 
     alert('Профиль обновлён!');
-  });
+  }
 }
 
 const logoutBtn = document.getElementById('logout');
