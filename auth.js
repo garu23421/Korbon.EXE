@@ -1,1 +1,117 @@
-// auth.js — регистрация, вход, кабинет + уровни доступаconst registerForm = document.getElementById('register-form');const loginForm = document.getElementById('login-form');// Уровни доступа и требованияconst levels = [  { level: 0, name: 'Новобранец', tasks: 0, access: ['Публичные страницы'] },  { level: 1, name: 'Исполнитель', tasks: 5, access: ['Общие голосовые каналы', 'Простые задания'] },  { level: 2, name: 'Оперативник', tasks: 15, access: ['Закрытые каналы', 'Средние операции', 'Голосование'] },  { level: 3, name: 'Элита', tasks: 30, access: ['VIP-каналы', 'Планирование', 'Полная база'] }];if (registerForm) {  registerForm.addEventListener('submit', (e) => {    e.preventDefault();    const username = document.getElementById('username').value.trim();    const password = document.getElementById('password').value;    const discord = document.getElementById('discord').value.trim();    if (password.length < 6) {      showMessage('register-message', 'Пароль минимум 6 символов', 'error');      return;    }    const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};    if (users[username]) {      showMessage('register-message', 'Позывной занят', 'error');      return;    }    users[username] = {      password,      discord,      level: 0,      tasks: 0,      joined: new Date().toISOString()    };    localStorage.setItem('korbonUsers', JSON.stringify(users));    localStorage.setItem('currentUser', username);    showMessage('register-message', 'Регистрация успешна! Теперь войди.', 'success');    setTimeout(() => window.location.href = 'login.html', 2000);  });}if (loginForm) {  loginForm.addEventListener('submit', (e) => {    e.preventDefault();    const username = document.getElementById('username').value.trim();    const password = document.getElementById('password').value;    const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};    if (!users[username] || users[username].password !== password) {      showMessage('login-message', 'Неверный ник или пароль', 'error');      return;    }    localStorage.setItem('currentUser', username);    showMessage('login-message', 'Вход выполнен!', 'success');    setTimeout(() => window.location.href = 'cabinet.html', 1500);  });}// Личный кабинетconst userDisplay = document.getElementById('username-display');const discordDisplay = document.getElementById('discord-display');const joinedDisplay = document.getElementById('joined-display');const levelDisplay = document.getElementById('level-display');const tasksDisplay = document.getElementById('tasks-display');const progressDisplay = document.getElementById('progress-display');const accessList = document.getElementById('access-list');const upgradeBtn = document.querySelector('.request-upgrade');const logoutBtn = document.querySelector('.logout-btn');if (userDisplay) {  const currentUser = localStorage.getItem('currentUser');  if (!currentUser) {    window.location.href = 'login.html';  }  const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};  const user = users[currentUser];  if (user) {    userDisplay.textContent = currentUser;    discordDisplay.textContent = user.discord;    joinedDisplay.textContent = new Date(user.joined).toLocaleDateString('ru-RU');    tasksDisplay.textContent = user.tasks;    const currentLevel = levels.find(l => l.level === user.level) || levels[0];    levelDisplay.textContent = currentLevel.name;    levelDisplay.className = `level-badge level-${user.level}`;    // Доступные функции    accessList.innerHTML = currentLevel.access.map(item => `<li>${item}</li>`).join('');    // Прогресс до следующего уровня    const nextLevel = levels.find(l => l.level === user.level + 1);    if (nextLevel) {      const needed = nextLevel.tasks - user.tasks;      progressDisplay.textContent = needed > 0 ? `${needed} заданий` : 'Готов к повышению';      if (needed <= 0) upgradeBtn.disabled = false;    } else {      progressDisplay.textContent = 'Максимальный уровень';      upgradeBtn.style.display = 'none';    }  } else {    localStorage.removeItem('currentUser');    window.location.href = 'login.html';  }  if (upgradeBtn) {    upgradeBtn.addEventListener('click', () => {      if (user.level < levels.length - 1) {        user.level++;        user.tasks = 0; // сброс для теста, в реале — нет        users[currentUser] = user;        localStorage.setItem('korbonUsers', JSON.stringify(users));        alert('Уровень повышен! Перезагрузи страницу.');        location.reload();      }    });  }  if (logoutBtn) {    logoutBtn.addEventListener('click', () => {      localStorage.removeItem('currentUser');      window.location.href = 'index.html';    });  }}function showMessage(id, text, type) {  const msg = document.getElementById(id);  if (msg) {    msg.textContent = text;    msg.className = `auth-message ${type}`;    msg.classList.remove('hidden');    setTimeout(() => msg.classList.add('hidden'), 5000);  }}
+// auth.js вЂ” РїСЂРѕСЃС‚Р°СЏ СЂРµРіРёСЃС‚СЂР°С†РёСЏ Рё РїСЂРѕС„РёР»СЊ РЅР° localStorage
+
+const registerForm = document.getElementById('register-form');
+const loginForm = document.getElementById('login-form');
+const editForm = document.getElementById('edit-form');
+
+if (registerForm) {
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const discord = document.getElementById('discord').value.trim();
+    const avatarUrl = document.getElementById('avatar-url').value.trim();
+
+    if (password.length < 6) {
+      showMessage('register-message', 'РџР°СЂРѕР»СЊ РјРёРЅРёРјСѓРј 6 СЃРёРјРІРѕР»РѕРІ', 'error');
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};
+
+    if (users[username]) {
+      showMessage('register-message', 'РџРѕР·С‹РІРЅРѕР№ Р·Р°РЅСЏС‚', 'error');
+      return;
+    }
+
+    users[username] = {
+      password,
+      discord: discord || 'РќРµ СѓРєР°Р·Р°РЅ',
+      avatar: avatarUrl || '/default-avatar.png',
+      status: 'РќРѕРІРѕР±СЂР°РЅРµС†'
+    };
+
+    localStorage.setItem('korbonUsers', JSON.stringify(users));
+    localStorage.setItem('currentUser', username);
+
+    showMessage('register-message', 'Р РµРіРёСЃС‚СЂР°С†РёСЏ СѓСЃРїРµС€РЅР°! РўРµРїРµСЂСЊ РІРѕР№РґРё.', 'success');
+    setTimeout(() => window.location.href = 'login.html', 2000);
+  });
+}
+
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};
+
+    if (!users[username] || users[username].password !== password) {
+      showMessage('login-message', 'РќРµРІРµСЂРЅС‹Р№ РЅРёРє РёР»Рё РїР°СЂРѕР»СЊ', 'error');
+      return;
+    }
+
+    localStorage.setItem('currentUser', username);
+    showMessage('login-message', 'Р’С…РѕРґ РІС‹РїРѕР»РЅРµРЅ!', 'success');
+    setTimeout(() => window.location.href = 'profile.html', 1500);
+  });
+}
+
+if (editForm) {
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) {
+    window.location.href = 'login.html';
+  }
+
+  const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};
+  const user = users[currentUser];
+
+  if (user) {
+    document.getElementById('username-display').textContent = currentUser;
+    document.getElementById('discord-display').textContent = user.discord;
+    document.getElementById('status-display').textContent = user.status;
+    document.getElementById('avatar-preview').src = user.avatar;
+
+    document.getElementById('new-status').value = user.status;
+    document.getElementById('new-avatar').value = user.avatar === '/default-avatar.png' ? '' : user.avatar;
+  }
+
+  editForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const newStatus = document.getElementById('new-status').value.trim() || 'РќРѕРІРѕР±СЂР°РЅРµС†';
+    const newAvatar = document.getElementById('new-avatar').value.trim() || '/default-avatar.png';
+
+    user.status = newStatus;
+    user.avatar = newAvatar;
+
+    users[currentUser] = user;
+    localStorage.setItem('korbonUsers', JSON.stringify(users));
+
+    document.getElementById('status-display').textContent = newStatus;
+    document.getElementById('avatar-preview').src = newAvatar;
+
+    alert('РџСЂРѕС„РёР»СЊ РѕР±РЅРѕРІР»С‘РЅ!');
+  });
+}
+
+const logoutBtn = document.getElementById('logout');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'index.html';
+  });
+}
+
+function showMessage(id, text, type) {
+  const msg = document.getElementById(id);
+  if (msg) {
+    msg.textContent = text;
+    msg.className = `auth-message ${type}`;
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 5000);
+  }
+}
