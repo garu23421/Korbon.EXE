@@ -1,3 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KorbonEXE — Чат</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img src="/logo.jpg" alt="KorbonEXE">
+      </div>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="about.html">Биография</a></li>
+        <li><a href="join.html">Вступить</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="chat.html" class="active">Чат</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="container chat-section fade-in">
+    <div class="chat-header">
+      <h2>Общий канал</h2>
+      <p id="user-status">Загрузка...</p>
+    </div>
+
+    <div id="chat-messages" class="chat-messages"></div>
+
+    <form id="chat-form" class="chat-form hidden">
+      <input type="text" id="nickname" placeholder="Твой ник" maxlength="20">
+      <input type="text" id="message" placeholder="Сообщение..." required autocomplete="off">
+      <button type="submit" class="submit-btn">Отправить</button>
+    </form>
+
+    <button id="login-btn" class="submit-btn">Войти через Google</button>
+    <button id="logout-btn" class="action-btn hidden">Выйти</button>
+    <button onclick="clearChat()" class="clear-chat">Очистить чат (локально)</button>
+  </section>
+
+  <footer class="fixed-footer">
+    <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
+  </footer>
+
 <script>
   // Твой config
   const firebaseConfig = {
