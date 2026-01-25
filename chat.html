@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KorbonEXE — Чат</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 
   <!-- Firebase SDK -->
@@ -14,25 +14,17 @@
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
-  
+
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <video 
-        src="logo-video.mp4" 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        alt="KorbonEXE Logo Animation">
-		</video>
+        <img src="/logo.jpg" alt="KorbonEXE">
       </div>
       <ul>
         <li><a href="index.html">Главная</a></li>
         <li><a href="about.html">Биография</a></li>
         <li><a href="join.html">Вступить</a></li>
         <li><a href="gallery.html">Галерея</a></li>
-		<li><a href="voice.html">Общение</a></li>
         <li><a href="chat.html" class="active">Чат</a></li>
       </ul>
     </nav>
@@ -62,7 +54,7 @@
   </footer>
 
   <script>
-    // Твой config (проверь, что он актуальный)
+    // Твой config
     const firebaseConfig = {
       apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
       authDomain: "korbonchat.firebaseapp.com",
@@ -87,7 +79,7 @@
     const logoutBtn = document.getElementById('logout-btn');
     const userStatus = document.getElementById('user-status');
 
-    // Твой UID — теперь ты модератор
+    // Твой UID для модерации
     const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';
 
     // Слушаем статус входа
@@ -106,7 +98,7 @@
       }
     });
 
-    // Вход через Google
+    // Вход
     loginBtn.addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider).catch(err => {
@@ -118,21 +110,25 @@
     // Выход
     logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // Получаем сообщения + кнопка удаления только для тебя
+    // Получаем сообщения
     messagesRef.on('child_added', (snapshot) => {
       const msg = snapshot.val();
       const key = snapshot.key;
+      const isAdmin = auth.currentUser && auth.currentUser.uid === ADMIN_UID;
+      const isOwn = auth.currentUser && msg.uid === auth.currentUser.uid;
 
       const div = document.createElement('div');
-      div.className = 'chat-message';
+      div.className = `chat-message ${isOwn ? 'own' : ''}`;
       div.innerHTML = `
-        <div class="message-header">
-          <strong>${msg.nick || 'Anonymous'}</strong>
-          <small>${msg.time}</small>
-          ${auth.currentUser && auth.currentUser.uid === ADMIN_UID ? 
-            `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
+        <img src="${msg.photoURL || 'https://via.placeholder.com/40/111/00ff9d?text=' + msg.nick[0]}" alt="Аватар" class="chat-avatar">
+        <div class="message-content">
+          <div class="message-header">
+            <strong>${msg.nick || 'Anonymous'}</strong>
+            <small>${msg.time}</small>
+            ${isAdmin ? `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
+          </div>
+          <div class="message-text">${msg.text}</div>
         </div>
-        <div class="message-text">${msg.text}</div>
       `;
       messagesDiv.appendChild(div);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -149,7 +145,13 @@
 
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      messagesRef.push({ nick, text, time }).catch(err => {
+      messagesRef.push({
+        uid: auth.currentUser.uid,
+        nick,
+        text,
+        time,
+        photoURL: auth.currentUser.photoURL || null
+      }).catch(err => {
         console.error('Ошибка:', err);
         alert('Не удалось отправить');
       });
@@ -157,7 +159,7 @@
       messageInput.value = '';
     });
 
-    // Удаление сообщения (только ты)
+    // Удаление сообщения
     function deleteMessage(key) {
       if (confirm('Удалить это сообщение навсегда?')) {
         messagesRef.child(key).remove().catch(err => {
@@ -175,5 +177,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
