@@ -29,146 +29,36 @@
     <div class="profile-wrapper">
       <h2>Личный профиль</h2>
 
-      <div id="loading" class="auth-message">Загрузка профиля...</div>
-
-      <div id="profile-info" class="profile-info hidden">
-        <img id="avatar" class="character-img" src="/default-avatar.png" alt="Аватар">
-        <p>Ник: <span id="username">Загрузка...</span></p>
-        <p>Discord ID: <span id="discord-id">Загрузка...</span></p>
-        <p>Статус: <span id="status">Новобранец</span></p>
+      <div class="profile-info">
+        <img id="avatar-preview" class="character-img" src="" alt="Аватар">
+        <p>Ник: <span id="username-display"></span></p>
+        <p>Discord: <span id="discord-display"></span></p>
+        <p>Статус: <span id="status-display"></span></p>
       </div>
 
-      <form id="edit-form" class="enhanced-form hidden">
+      <form id="edit-form" class="enhanced-form">
         <div class="form-group">
           <label for="new-status">Изменить статус</label>
           <input type="text" id="new-status" placeholder="Новый статус">
         </div>
-        <button type="submit" class="submit-btn">Сохранить</button>
+
+        <div class="form-group">
+          <label for="new-avatar">Ссылка на новый аватар</label>
+          <input type="url" id="new-avatar" placeholder="https://example.com/avatar.png">
+        </div>
+
+        <button type="submit" class="submit-btn">Сохранить изменения</button>
       </form>
 
-      <button id="logout" class="action-btn hidden">Выйти</button>
+      <button id="logout" class="action-btn">Выйти</button>
     </div>
   </section>
 
   <footer>
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
-   
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
-
-    async function loadProfile() {
-      document.getElementById('loading').textContent = 'Проверка сессии...';
-
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-      if (sessionError || !session) {
-        document.getElementById('loading').textContent = 'Нет авторизации. Перенаправление...';
-        document.getElementById('loading').classList.add('error');
-        setTimeout(() => window.location.href = 'register.html', 2000);
-        return;
-      }
-
-      const user = session.user;
-
-      // Загрузка профиля
-      let { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      // Если профиля нет — создаём
-      if (profileError && profileError.code === 'PGRST116') {
-        document.getElementById('loading').textContent = 'Создание профиля...';
-
-        const newProfile = {
-          id: user.id,
-          username: user.user_metadata.full_name || user.user_metadata.preferred_username || 'User',
-          discord_id: user.user_metadata.provider_id || user.id,
-          avatar: user.user_metadata.avatar_url || '/default-avatar.png',
-          status: 'Новобранец'
-        };
-
-        const { data: inserted, error: insertError } = await supabase
-          .from('users')
-          .insert(newProfile)
-          .select()
-          .single();
-
-        if (insertError) {
-          document.getElementById('loading').textContent = 'Ошибка создания профиля: ' + insertError.message;
-          document.getElementById('loading').classList.add('error');
-          return;
-        }
-
-        profile = inserted;
-      } else if (profileError) {
-        document.getElementById('loading').textContent = 'Ошибка загрузки: ' + profileError.message;
-        document.getElementById('loading').classList.add('error');
-        return;
-      }
-
-      // Показываем профиль
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('profile-info').classList.remove('hidden');
-      document.getElementById('edit-form').classList.remove('hidden');
-      document.getElementById('logout').classList.remove('hidden');
-
-      document.getElementById('username').textContent = profile.username || 'Неизвестно';
-      document.getElementById('discord-id').textContent = profile.discord_id || 'Неизвестно';
-      document.getElementById('avatar').src = profile.avatar || '/default-avatar.png';
-      document.getElementById('status').textContent = profile.status || 'Новобранец';
-      document.getElementById('new-status').value = profile.status || '';
-
-      // Сохранение изменений
-      document.getElementById('edit-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newStatus = document.getElementById('new-status').value.trim() || 'Новобранец';
-
-        const { error } = await supabase
-          .from('users')
-          .update({ status: newStatus })
-          .eq('id', user.id);
-
-        if (error) {
-          alert('Ошибка сохранения: ' + error.message);
-        } else {
-          document.getElementById('status').textContent = newStatus;
-          alert('Статус обновлён!');
-        }
-      });
-
-      // Выход
-      document.getElementById('logout').addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = 'index.html';
-      });
-    }
-
-    loadProfile();
-  </script>
+  <script src="auth.js"></script>
   <script src="script.js"></script>
-<script type="module">
-  async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-    document.getElementById('debug-session').textContent = session ? 'Сессия есть! User ID: ' + session.user.id : 'Сессии нет :(';
-  }
-</script>
-  <button onclick="testSession()">Тест сессии</button>
-<p id="session-debug"></p>
-
-<script type="module">
-  async function testSession() {
-    const { data } = await supabase.auth.getSession();
-    document.getElementById('session-debug').textContent = 
-      data.session ? 'Сессия активна! User: ' + data.session.user.id : 'Сессия отсутствует';
-  }
-</script>
 </body>
 </html>
-
-
-
