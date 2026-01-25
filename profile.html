@@ -29,52 +29,52 @@
 
   <section class="container profile-section fade-in">
     <div class="profile-card">
-      <div class="profile-header">
-        <img id="avatar-preview" class="profile-avatar" src="" alt="Аватар">
-        <h2 id="username-display">Загрузка...</h2>
+      <div class="profile-avatar-wrapper">
+        <img id="avatar-preview" class="profile-avatar" src="/default-avatar.png" alt="Аватар">
       </div>
+      <h2 id="username-display" class="profile-name">Загрузка...</h2>
 
-      <div class="profile-body">
+      <div class="profile-info">
         <p><strong>Discord:</strong> <span id="discord-display">Не указан</span></p>
         <p><strong>Статус:</strong> <span id="status-display">Новобранец</span></p>
       </div>
 
       <form id="edit-form" class="profile-form">
         <div class="form-group">
-          <label for="new-status">Новый статус</label>
+          <label for="new-status">Статус</label>
           <input type="text" id="new-status" placeholder="Расскажи о себе">
         </div>
 
         <div class="form-group">
-          <label for="avatar-file">Загрузить аватар</label>
+          <label for="avatar-file">Новый аватар</label>
           <input type="file" id="avatar-file" accept="image/*">
         </div>
 
         <div class="form-group">
-          <label for="avatar-url">Или ссылка на аватар</label>
+          <label for="avatar-url">Или ссылка</label>
           <input type="url" id="avatar-url" placeholder="https://...">
         </div>
 
         <button type="submit" class="submit-btn neon-btn">Сохранить</button>
       </form>
 
-      <button id="logout" class="action-btn logout-btn">Выйти</button>
+      <button id="logout" class="logout-btn">Выйти</button>
     </div>
   </section>
 
-  <footer>
+  <footer class="fixed-footer">
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
   <script src="auth.js"></script>
   <script>
-    // Предпросмотр аватара при выборе файла
+    // Предпросмотр аватара
     document.getElementById('avatar-file').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (event) => {
-          document.getElementById('avatar-preview').src = event.target.result;
+        reader.onload = (ev) => {
+          document.getElementById('avatar-preview').src = ev.target.result;
         };
         reader.readAsDataURL(file);
       }
