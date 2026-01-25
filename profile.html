@@ -60,6 +60,8 @@
     const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
 
     async function loadProfile() {
+      document.getElementById('loading').textContent = 'Проверка сессии...';
+
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
       if (sessionError || !session) {
@@ -71,15 +73,17 @@
 
       const user = session.user;
 
-      // Пытаемся загрузить существующий профиль
+      // Загрузка профиля
       let { data: profile, error: profileError } = await supabase
         .from('users')
         .select('*')
         .eq('id', user.id)
         .single();
 
-      // Если профиля нет — создаём новый
-      if (profileError && profileError.code === 'PGRST116') { // Нет записи
+      // Если профиля нет — создаём
+      if (profileError && profileError.code === 'PGRST116') {
+        document.getElementById('loading').textContent = 'Создание профиля...';
+
         const newProfile = {
           id: user.id,
           username: user.user_metadata.full_name || user.user_metadata.preferred_username || 'User',
@@ -113,7 +117,7 @@
       document.getElementById('edit-form').classList.remove('hidden');
       document.getElementById('logout').classList.remove('hidden');
 
-      document.getElementById('username').textContent = profile.username || 'Загрузка...';
+      document.getElementById('username').textContent = profile.username || 'Неизвестно';
       document.getElementById('discord-id').textContent = profile.discord_id || 'Неизвестно';
       document.getElementById('avatar').src = profile.avatar || '/default-avatar.png';
       document.getElementById('status').textContent = profile.status || 'Новобранец';
