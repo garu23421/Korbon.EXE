@@ -1038,25 +1038,26 @@ footer {
    Стили только для чата (chat.html)
    ============================================== */
 
-/* Общая обёртка страницы чата */
+/* Полный красивый стиль чата (замени/добавь в конец style.css) */
+
+/* Общая страница чата */
 .chat-page {
   display: flex;
   gap: 1.5rem;
-  margin-top: 2rem;
+  margin: 2rem auto;
   max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0 1rem;
 }
 
-/* Боковая панель с пользователями */
+/* Боковая панель (пользователи) */
 .chat-sidebar {
   width: 280px;
   flex-shrink: 0;
-  background: rgba(17, 17, 17, 0.85);
+  background: rgba(17,17,17,0.85);
   border-radius: 16px;
   padding: 1.5rem;
   border: 1px solid #222;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
   height: fit-content;
   position: sticky;
   top: 90px;
@@ -1066,14 +1067,14 @@ footer {
   font-size: 1.4rem;
   margin-bottom: 1.2rem;
   color: var(--accent);
-  text-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+  text-shadow: 0 0 8px rgba(0,255,157,0.3);
 }
 
-/* Элемент пользователя в списке */
+/* Элемент пользователя */
 .user-item {
   padding: 0.9rem 1rem;
   margin: 0.5rem 0;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255,255,255,0.03);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1085,9 +1086,9 @@ footer {
 
 .user-item:hover,
 .user-item.active {
-  background: rgba(0, 255, 157, 0.12);
+  background: rgba(0,255,157,0.12);
   transform: translateX(4px);
-  box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
+  box-shadow: 0 0 15px rgba(0,255,157,0.2);
 }
 
 /* Основная область чата */
@@ -1109,7 +1110,7 @@ footer {
   font-size: 2.4rem;
   margin-bottom: 0.4rem;
   color: var(--accent);
-  text-shadow: 0 0 12px rgba(0, 255, 157, 0.4);
+  text-shadow: 0 0 12px rgba(0,255,157,0.4);
 }
 
 #user-status {
@@ -1123,30 +1124,15 @@ footer {
   min-height: 400px;
   max-height: 70vh;
   overflow-y: auto;
-  background: rgba(17, 17, 17, 0.8);
+  background: rgba(17,17,17,0.8);
   border-radius: 16px;
   padding: 1.5rem;
-  border: 1px solid rgba(0, 255, 157, 0.12);
+  border: 1px solid rgba(0,255,157,0.12);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
   margin-bottom: 1.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) #111;
 }
 
-/* Стили скроллбара */
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: #111;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 3px;
-}
-
-/* Одно сообщение */
+/* Сообщение */
 .chat-message {
   display: flex;
   align-items: flex-start;
@@ -1166,7 +1152,7 @@ footer {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--accent);
-  box-shadow: 0 0 12px rgba(0, 255, 157, 0.3);
+  box-shadow: 0 0 12px rgba(0,255,157,0.3);
   margin: 0 0.8rem;
   flex-shrink: 0;
 }
@@ -1177,23 +1163,22 @@ footer {
 }
 
 .message-content {
-  background: rgba(30, 30, 30, 0.9);
+  background: rgba(30,30,30,0.9);
   border-radius: 14px;
   padding: 0.9rem 1.3rem;
   border: 1px solid #333;
   position: relative;
+  max-width: calc(100% - 70px);
 }
 
 .chat-message.own .message-content {
-  background: linear-gradient(135deg, rgba(0, 255, 157, 0.12), rgba(0, 204, 153, 0.12));
+  background: linear-gradient(135deg, rgba(0,255,157,0.12), rgba(0,204,153,0.12));
   border-color: var(--accent);
-  box-shadow: 0 0 18px rgba(0, 255, 157, 0.15);
 }
 
 .message-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 0.4rem;
   font-size: 0.9rem;
   color: #aaa;
@@ -1209,22 +1194,6 @@ footer {
   word-break: break-word;
 }
 
-.delete-btn {
-  background: var(--danger);
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-left: 0.6rem;
-  transition: background 0.2s;
-}
-
-.delete-btn:hover {
-  background: #ff4d4d;
-}
-
 /* Форма ввода */
 .chat-form {
   display: flex;
@@ -1237,7 +1206,7 @@ footer {
   flex: 1;
   min-width: 200px;
   padding: 0.9rem 1.2rem;
-  background: rgba(17, 17, 17, 0.9);
+  background: rgba(17,17,17,0.9);
   border: 1px solid #333;
   border-radius: 10px;
   color: white;
@@ -1255,7 +1224,7 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Мобильная адаптация */
+/* Адаптив (мобильные) */
 @media (max-width: 900px) {
   .chat-page {
     flex-direction: column;
@@ -1269,53 +1238,4 @@ footer {
   .chat-messages {
     max-height: 50vh;
   }
-}
-
-/*11111*/
-
-.chat-page {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.chat-sidebar {
-  width: 250px;
-  background: rgba(17,17,17,0.8);
-  border-radius: 12px;
-  padding: 1.5rem;
-  border: 1px solid #222;
-}
-
-.user-item {
-  padding: 0.8rem;
-  margin: 0.5rem 0;
-  background: rgba(255,255,255,0.03);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all .3s;
-}
-
-.user-item:hover, .user-item.active {
-  background: rgba(0,255,157,0.15);
-  color: var(--accent);
-}
-
-.chat-main {
-  flex: 1;
-}
-
-.chat-form {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.chat-form input {
-  flex: 1;
-  padding: 0.9rem;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: white;
 }
