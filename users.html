@@ -28,11 +28,17 @@
   </header>
 
   <section class="container users-section fade-in">
-    <h2>Зарегистрированные пользователи</h2>
+    <h2 class="glow-title">Синдикат KorbonEXE</h2>
+    <p class="subtitle">Зарегистрированные оперативники</p>
+
     <div id="users-list" class="users-grid"></div>
+
+    <div id="no-users" class="auth-message hidden">
+      Пока нет зарегистрированных пользователей. Стань первым!
+    </div>
   </section>
 
-  <footer>
+  <footer class="fixed-footer">
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
@@ -45,19 +51,27 @@
 
     const users = JSON.parse(localStorage.getItem('korbonUsers')) || {};
     const list = document.getElementById('users-list');
+    const noUsers = document.getElementById('no-users');
 
-    Object.keys(users).forEach(username => {
-      const user = users[username];
-      const card = document.createElement('div');
-      card.className = 'user-card';
-      card.innerHTML = `
-        <img src="${user.avatar}" alt="${username}" class="user-avatar">
-        <h3>${username}</h3>
-        <p>Статус: ${user.status || 'Новобранец'}</p>
-        <p>Discord: ${user.discord || 'Не указан'}</p>
-      `;
-      list.appendChild(card);
-    });
+    if (Object.keys(users).length === 0) {
+      noUsers.classList.remove('hidden');
+    } else {
+      Object.keys(users).forEach(username => {
+        const user = users[username];
+
+        const card = document.createElement('div');
+        card.className = 'user-card fade-in';
+        card.innerHTML = `
+          <div class="avatar-frame">
+            <img src="${user.avatar}" alt="${username}" class="user-avatar">
+          </div>
+          <h3 class="username">${username}</h3>
+          <p class="status">${user.status || 'Новобранец'}</p>
+          <p class="discord">${user.discord || 'Не указан'}</p>
+        `;
+        list.appendChild(card);
+      });
+    }
   </script>
   <script src="script.js"></script>
 </body>
