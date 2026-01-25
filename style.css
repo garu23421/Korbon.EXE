@@ -45,7 +45,7 @@ body {
 
 .logo-container img {
   height:60px;
-  max-width:220px;
+  max-width:70px;
   filter:drop-shadow(0 0 15px var(--accent));
   transition:transform .4s;
 }
