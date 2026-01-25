@@ -21,42 +21,44 @@
         <li><a href="join.html">Вступить</a></li>
         <li><a href="gallery.html">Галерея</a></li>
         <li><a href="profile.html" class="active">Профиль</a></li>
+        <li><a href="users.html">Пользователи</a></li>
+        <li><a href="chat.html">Чат</a></li>
       </ul>
     </nav>
   </header>
 
   <section class="container profile-section fade-in">
-    <div class="profile-wrapper">
-      <h2>Личный профиль</h2>
-
-      <div class="profile-info">
-        <img id="avatar-preview" class="character-img" src="" alt="Аватар">
-        <p>Ник: <span id="username-display"></span></p>
-        <p>Discord: <span id="discord-display"></span></p>
-        <p>Статус: <span id="status-display"></span></p>
+    <div class="profile-card">
+      <div class="profile-header">
+        <img id="avatar-preview" class="profile-avatar" src="" alt="Аватар">
+        <h2 id="username-display">Загрузка...</h2>
       </div>
 
-      <form id="edit-form" class="enhanced-form">
+      <div class="profile-body">
+        <p><strong>Discord:</strong> <span id="discord-display">Не указан</span></p>
+        <p><strong>Статус:</strong> <span id="status-display">Новобранец</span></p>
+      </div>
+
+      <form id="edit-form" class="profile-form">
         <div class="form-group">
-          <label for="new-status">Изменить статус</label>
-          <input type="text" id="new-status" placeholder="Новый статус">
+          <label for="new-status">Новый статус</label>
+          <input type="text" id="new-status" placeholder="Расскажи о себе">
         </div>
 
         <div class="form-group">
-          <label for="avatar-file">Загрузить аватар (jpg/png)</label>
+          <label for="avatar-file">Загрузить аватар</label>
           <input type="file" id="avatar-file" accept="image/*">
-          <p class="small-text">Или вставь ссылку ниже (если не хочешь загружать файл)</p>
         </div>
 
         <div class="form-group">
-          <label for="avatar-url">Ссылка на аватар</label>
-          <input type="url" id="avatar-url" placeholder="https://example.com/avatar.png">
+          <label for="avatar-url">Или ссылка на аватар</label>
+          <input type="url" id="avatar-url" placeholder="https://...">
         </div>
 
-        <button type="submit" class="submit-btn">Сохранить изменения</button>
+        <button type="submit" class="submit-btn neon-btn">Сохранить</button>
       </form>
 
-      <button id="logout" class="action-btn">Выйти</button>
+      <button id="logout" class="action-btn logout-btn">Выйти</button>
     </div>
   </section>
 
@@ -67,15 +69,12 @@
   <script src="auth.js"></script>
   <script>
     // Предпросмотр аватара при выборе файла
-    const avatarFileInput = document.getElementById('avatar-file');
-    const avatarPreview = document.getElementById('avatar-preview');
-
-    avatarFileInput.addEventListener('change', (e) => {
+    document.getElementById('avatar-file').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          avatarPreview.src = event.target.result;
+          document.getElementById('avatar-preview').src = event.target.result;
         };
         reader.readAsDataURL(file);
       }
