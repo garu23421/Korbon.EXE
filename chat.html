@@ -1,189 +1,135 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KorbonEXE — Чат</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css">
+<script>
+  // Твой config
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
+    authDomain: "korbonchat.firebaseapp.com",
+    databaseURL: "https://korbonchat-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "korbonchat",
+    storageBucket: "korbonchat.firebasestorage.app",
+    messagingSenderId: "855813386160",
+    appId: "1:855813386160:web:9a4363e6e781e77c797075",
+    measurementId: "G-Y8VY6ZJ708"
+  };
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-</head>
-<body>
-  <canvas id="matrix-canvas"></canvas>
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+  const messagesRef = db.ref('korbon-chat');
 
-  <header>
-    <nav class="navbar">
-      <div class="logo-container">
-        <video 
-        src="logo-video.mp4" 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        alt="KorbonEXE Logo Animation">
-		</video>
-      </div>
-      <ul>
-        <li><a href="index.html">Главная</a></li>
-        <li><a href="about.html">Биография</a></li>
-        <li><a href="join.html">Вступить</a></li>
-        <li><a href="gallery.html">Галерея</a></li>
-  		  <li><a href="voice.html">Общение</a></li>
-        <li><a href="chat.html" class="active">Чат</a></li>
-      </ul>
-    </nav>
-  </header>
+  const messagesDiv = document.getElementById('chat-messages');
+  const chatForm = document.getElementById('chat-form');
+  const nicknameInput = document.getElementById('nickname');
+  const messageInput = document.getElementById('message');
+  const loginBtn = document.getElementById('login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const userStatus = document.getElementById('user-status');
 
-  <section class="container chat-section fade-in">
-    <div class="chat-header">
-      <h2>Общий канал</h2>
-      <p id="user-status">Загрузка...</p>
-    </div>
+  // Твой UID — модератор
+  const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';
 
-    <div id="chat-messages" class="chat-messages"></div>
+  // Слушаем статус входа
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      userStatus.textContent = `Привет, ${user.displayName || user.email.split('@')[0]}`;
+      loginBtn.classList.add('hidden');
+      logoutBtn.classList.remove('hidden');
+      chatForm.classList.remove('hidden');
+      nicknameInput.value = user.displayName || 'Anonymous';
+      // Принудительно обновляем аватарку после входа
+      setTimeout(() => {
+        if (user.photoURL) {
+          console.log('Аватарка Google:', user.photoURL);
+        } else {
+          console.log('Аватарка Google не найдена');
+        }
+      }, 2000);
+    } else {
+      userStatus.textContent = 'Войди через Google, чтобы писать';
+      loginBtn.classList.remove('hidden');
+      logoutBtn.classList.add('hidden');
+      chatForm.classList.add('hidden');
+    }
+  });
 
-    <form id="chat-form" class="chat-form hidden">
-      <input type="text" id="nickname" placeholder="Твой ник" maxlength="20">
-      <input type="text" id="message" placeholder="Сообщение..." required autocomplete="off">
-      <button type="submit" class="submit-btn">Отправить</button>
-    </form>
-
-    <button id="login-btn" class="submit-btn">Войти через Google</button>
-    <button id="logout-btn" class="action-btn hidden">Выйти</button>
-    <button onclick="clearChat()" class="clear-chat">Очистить чат (локально)</button>
-  </section>
-
-  <footer class="fixed-footer">
-    <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
-  </footer>
-
-  <script>
-    // Твой config
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
-      authDomain: "korbonchat.firebaseapp.com",
-      databaseURL: "https://korbonchat-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "korbonchat",
-      storageBucket: "korbonchat.firebasestorage.app",
-      messagingSenderId: "855813386160",
-      appId: "1:855813386160:web:9a4363e6e781e77c797075",
-      measurementId: "G-Y8VY6ZJ708"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-    const messagesRef = db.ref('korbon-chat');
-
-    const messagesDiv = document.getElementById('chat-messages');
-    const chatForm = document.getElementById('chat-form');
-    const nicknameInput = document.getElementById('nickname');
-    const messageInput = document.getElementById('message');
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userStatus = document.getElementById('user-status');
-
-    // Твой UID для модерации
-    const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';
-
-    // Слушаем статус входа
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        userStatus.textContent = `Привет, ${user.displayName || user.email.split('@')[0]}`;
-        loginBtn.classList.add('hidden');
-        logoutBtn.classList.remove('hidden');
-        chatForm.classList.remove('hidden');
-        nicknameInput.value = user.displayName || 'Anonymous';
-      } else {
-        userStatus.textContent = 'Войди через Google, чтобы писать';
-        loginBtn.classList.remove('hidden');
-        logoutBtn.classList.add('hidden');
-        chatForm.classList.add('hidden');
-      }
+  // Вход
+  loginBtn.addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(err => {
+      console.error('Ошибка входа:', err.code, err.message);
+      alert('Ошибка входа: ' + err.message);
     });
+  });
 
-    // Вход
-    loginBtn.addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch(err => {
-        console.error('Ошибка входа:', err);
-        alert('Ошибка: ' + err.message);
-      });
-    });
+  // Выход
+  logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // Выход
-    logoutBtn.addEventListener('click', () => auth.signOut());
+  // Получаем сообщения с аватарками
+  messagesRef.on('child_added', (snapshot) => {
+    const msg = snapshot.val();
+    const key = snapshot.key;
+    const isAdmin = auth.currentUser && auth.currentUser.uid === ADMIN_UID;
+    const isOwn = auth.currentUser && msg.uid === auth.currentUser.uid;
 
-    // Получаем сообщения
-    messagesRef.on('child_added', (snapshot) => {
-      const msg = snapshot.val();
-      const key = snapshot.key;
-      const isAdmin = auth.currentUser && auth.currentUser.uid === ADMIN_UID;
-      const isOwn = auth.currentUser && msg.uid === auth.currentUser.uid;
+    // Аватарка: из сообщения (если было сохранено) или из текущего пользователя
+    let avatarUrl = msg.photoURL || 'https://via.placeholder.com/40/111/00ff9d?text=' + (msg.nick ? msg.nick[0] : 'A');
 
-      const div = document.createElement('div');
-      div.className = `chat-message ${isOwn ? 'own' : ''}`;
-      div.innerHTML = `
-        <img src="${msg.photoURL || 'https://via.placeholder.com/40/111/00ff9d?text=' + msg.nick[0]}" alt="Аватар" class="chat-avatar">
-        <div class="message-content">
-          <div class="message-header">
-            <strong>${msg.nick || 'Anonymous'}</strong>
-            <small>${msg.time}</small>
-            ${isAdmin ? `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
-          </div>
-          <div class="message-text">${msg.text}</div>
+    const div = document.createElement('div');
+    div.className = `chat-message ${isOwn ? 'own' : ''}`;
+    div.innerHTML = `
+      <img src="${avatarUrl}" alt="Аватар" class="chat-avatar" onerror="this.src='https://via.placeholder.com/40/111/00ff9d?text=' + (msg.nick ? msg.nick[0] : 'A')">
+      <div class="message-content">
+        <div class="message-header">
+          <strong>${msg.nick || 'Anonymous'}</strong>
+          <small>${msg.time}</small>
+          ${isAdmin ? `<button class="delete-btn" onclick="deleteMessage('${key}')">Удалить</button>` : ''}
         </div>
-      `;
-      messagesDiv.appendChild(div);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        <div class="message-text">${msg.text}</div>
+      </div>
+    `;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+
+  // Отправка сообщения (сохраняем photoURL)
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!auth.currentUser) return alert('Сначала войди');
+
+    const nick = nicknameInput.value.trim() || auth.currentUser.displayName || 'Anonymous';
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    messagesRef.push({
+      uid: auth.currentUser.uid,
+      nick,
+      text,
+      time,
+      photoURL: auth.currentUser.photoURL || null
+    }).catch(err => {
+      console.error('Ошибка:', err);
+      alert('Не удалось отправить');
     });
 
-    // Отправка сообщения
-    chatForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!auth.currentUser) return alert('Сначала войди');
+    messageInput.value = '';
+  });
 
-      const nick = nicknameInput.value.trim() || auth.currentUser.displayName || 'Anonymous';
-      const text = messageInput.value.trim();
-      if (!text) return;
-
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      messagesRef.push({
-        uid: auth.currentUser.uid,
-        nick,
-        text,
-        time,
-        photoURL: auth.currentUser.photoURL || null
-      }).catch(err => {
-        console.error('Ошибка:', err);
-        alert('Не удалось отправить');
+  // Удаление сообщения
+  function deleteMessage(key) {
+    if (confirm('Удалить сообщение навсегда?')) {
+      messagesRef.child(key).remove().catch(err => {
+        console.error('Ошибка удаления:', err);
+        alert('Не получилось удалить');
       });
-
-      messageInput.value = '';
-    });
-
-    // Удаление сообщения
-    function deleteMessage(key) {
-      if (confirm('Удалить это сообщение навсегда?')) {
-        messagesRef.child(key).remove().catch(err => {
-          console.error('Ошибка удаления:', err);
-          alert('Не получилось удалить');
-        });
-      }
     }
+  }
 
-    // Локальная очистка
-    function clearChat() {
-      if (confirm('Очистить чат только у себя?')) messagesDiv.innerHTML = '';
-    }
-  </script>
+  // Локальная очистка
+  function clearChat() {
+    if (confirm('Очистить чат только у себя?')) messagesDiv.innerHTML = '';
+  }
+</script>
   <script src="script.js"></script>
 </body>
 </html>
-
-
