@@ -53,6 +53,8 @@
   <footer>
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
+    <button onclick="checkSession()">Проверить сессию (debug)</button>
+<p id="debug-session"></p>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
@@ -151,9 +153,6 @@
     loadProfile();
   </script>
   <script src="script.js"></script>
-  <button onclick="checkSession()">Проверить сессию (debug)</button>
-<p id="debug-session"></p>
-
 <script type="module">
   async function checkSession() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -162,4 +161,5 @@
 </script>
 </body>
 </html>
+
 
