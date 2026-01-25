@@ -43,8 +43,14 @@
         </div>
 
         <div class="form-group">
-          <label for="new-avatar">Ссылка на новый аватар</label>
-          <input type="url" id="new-avatar" placeholder="https://example.com/avatar.png">
+          <label for="avatar-file">Загрузить аватар (jpg/png)</label>
+          <input type="file" id="avatar-file" accept="image/*">
+          <p class="small-text">Или вставь ссылку ниже (если не хочешь загружать файл)</p>
+        </div>
+
+        <div class="form-group">
+          <label for="avatar-url">Ссылка на аватар</label>
+          <input type="url" id="avatar-url" placeholder="https://example.com/avatar.png">
         </div>
 
         <button type="submit" class="submit-btn">Сохранить изменения</button>
@@ -59,6 +65,22 @@
   </footer>
 
   <script src="auth.js"></script>
+  <script>
+    // Предпросмотр аватара при выборе файла
+    const avatarFileInput = document.getElementById('avatar-file');
+    const avatarPreview = document.getElementById('avatar-preview');
+
+    avatarFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          avatarPreview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
