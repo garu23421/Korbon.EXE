@@ -88,10 +88,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-    app_id = "2106536"
-    key = "9c5cc01d01dc7c4dad38"
-    secret = "e65dd9efe19332aeee21"
-    cluster = "eu"
+          app_id: '2106536',
+          key: '9c5cc01d01dc7c4dad38',
+          secret: 'e65dd9efe19332aeee21',
+          channel: 'korbon-chat',
+          event: 'new-message',
           data: { nick, text, time }
         })
       });
@@ -107,3 +108,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
