@@ -7,7 +7,7 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 
-  <!-- Firebase SDK (compat — без ошибок импорта) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -30,23 +30,30 @@
     </nav>
   </header>
 
-  <section class="container chat-section fade-in">
-    <div class="chat-header">
-      <h2>Общий канал</h2>
-      <p id="user-status">Загрузка...</p>
+  <section class="container chat-page fade-in">
+    <div class="chat-sidebar">
+      <h3>Пользователи онлайн</h3>
+      <div id="user-list"></div>
     </div>
 
-    <div id="chat-messages" class="chat-messages"></div>
+    <div class="chat-main">
+      <div class="chat-header">
+        <h2 id="chat-title">Общий чат</h2>
+        <p id="user-status">Загрузка...</p>
+      </div>
 
-    <form id="chat-form" class="chat-form hidden">
-      <input type="text" id="nickname" placeholder="Твой ник" maxlength="20">
-      <input type="text" id="message" placeholder="Сообщение..." required autocomplete="off">
-      <button type="submit" class="submit-btn">Отправить</button>
-    </form>
+      <div id="chat-messages" class="chat-messages"></div>
 
-    <button id="login-btn" class="submit-btn">Войти через Google</button>
-    <button id="logout-btn" class="action-btn hidden">Выйти</button>
-    <button onclick="clearChat()" class="clear-chat">Очистить чат (только у тебя)</button>
+      <form id="chat-form" class="chat-form hidden">
+        <input type="text" id="nickname" placeholder="Твой ник" maxlength="20">
+        <input type="text" id="message" placeholder="Сообщение..." required autocomplete="off">
+        <button type="submit" class="submit-btn">Отправить</button>
+      </form>
+
+      <button id="login-btn" class="submit-btn">Войти через Google</button>
+      <button id="logout-btn" class="action-btn hidden">Выйти</button>
+      <button onclick="clearChat()" class="clear-chat">Очистить (локально)</button>
+    </div>
   </section>
 
   <footer class="fixed-footer">
@@ -54,7 +61,7 @@
   </footer>
 
   <script>
-    // Твой Firebase config
+    // Твой config
     const firebaseConfig = {
       apiKey: "AIzaSyD6PoTmUk9ejWbxyX6HSc51odaIt_we1Gk",
       authDomain: "korbonchat.firebaseapp.com",
@@ -66,14 +73,9 @@
       measurementId: "G-Y8VY6ZJ708"
     };
 
-    // Инициализация (только один раз)
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    const messagesRef = db.ref('korbon-chat');
 
     const messagesDiv = document.getElementById('chat-messages');
     const chatForm = document.getElementById('chat-form');
@@ -82,105 +84,124 @@
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const userStatus = document.getElementById('user-status');
+    const chatTitle = document.getElementById('chat-title');
+    const userList = document.getElementById('user-list');
 
-    // Твой UID (модератор)
     const ADMIN_UID = 'L2S9TT19NbXxkhGiaEpEItVQ48u1';
 
-    // Слушаем статус входа
-    auth.onAuthStateChanged((user) => {
+    let currentUser = null;
+    let currentChat = 'global'; // 'global' или uid собеседника
+    let messagesListener = null;
+
+    // Слушаем вход
+    auth.onAuthStateChanged(user => {
+      currentUser = user;
       if (user) {
         userStatus.textContent = `Привет, ${user.displayName || user.email.split('@')[0]}`;
         loginBtn.classList.add('hidden');
         logoutBtn.classList.remove('hidden');
         chatForm.classList.remove('hidden');
         nicknameInput.value = user.displayName || 'Anonymous';
+        loadUsers();
+        openChat('global');
       } else {
-        userStatus.textContent = 'Войди через Google, чтобы писать';
+        userStatus.textContent = 'Войди через Google';
         loginBtn.classList.remove('hidden');
         logoutBtn.classList.add('hidden');
         chatForm.classList.add('hidden');
+        messagesDiv.innerHTML = '';
+        chatTitle.textContent = 'Общий чат';
       }
     });
 
-    // Вход через Google
+    // Вход / выход
     loginBtn.addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch((error) => {
-        console.error('Ошибка входа:', error.code, error.message);
-        alert('Ошибка входа: ' + error.message);
+      auth.signInWithPopup(provider);
+    });
+
+    logoutBtn.addEventListener('click', () => auth.signOut());
+
+    // Загрузка списка пользователей
+    function loadUsers() {
+      db.ref('users').on('value', snapshot => {
+        userList.innerHTML = '<div class="user-item active" onclick="openChat(\'global\')">Общий чат</div>';
+        snapshot.forEach(child => {
+          const u = child.val();
+          if (u.uid !== currentUser.uid) {
+            const div = document.createElement('div');
+            div.className = 'user-item';
+            div.innerHTML = u.name;
+            div.onclick = () => openChat(u.uid);
+            userList.appendChild(div);
+          }
+        });
       });
-    });
+    }
 
-    // Выход
-    logoutBtn.addEventListener('click', () => {
-      auth.signOut().catch((error) => {
-        console.error('Ошибка выхода:', error);
+    // Открытие чата
+    function openChat(uid) {
+      currentChat = uid;
+      messagesDiv.innerHTML = '';
+      chatTitle.textContent = uid === 'global' ? 'Общий чат' : 'ЛС';
+
+      if (messagesListener) messagesListener.off();
+
+      const chatPath = uid === 'global' ? 'korbon-chat' : `dm/${[currentUser.uid, uid].sort().join('_')}`;
+      messagesListener = db.ref(chatPath);
+      messagesListener.on('child_added', snapshot => {
+        const msg = snapshot.val();
+        const key = snapshot.key;
+        const isAdmin = currentUser.uid === ADMIN_UID;
+        const isOwn = msg.uid === currentUser.uid;
+
+        const div = document.createElement('div');
+        div.className = `chat-message ${isOwn ? 'own' : ''}`;
+        div.innerHTML = `
+          <div class="message-header">
+            <strong>${msg.nick || 'Anonymous'}</strong>
+            <small>${msg.time}</small>
+            ${isAdmin ? `<button onclick="deleteMessage('${key}', '${chatPath}')">Удалить</button>` : ''}
+          </div>
+          <div class="message-text">${msg.text}</div>
+        `;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
       });
-    });
+    }
 
-    // Получаем сообщения
-    messagesRef.on('child_added', (snapshot) => {
-      const msg = snapshot.val();
-      const key = snapshot.key;
-      const isAdmin = auth.currentUser && auth.currentUser.uid === ADMIN_UID;
-
-      const div = document.createElement('div');
-      div.className = 'chat-message';
-      div.innerHTML = `
-        <div class="message-header">
-          <strong>${msg.nick || 'Anonymous'}</strong>
-          <small>${msg.time}</small>
-          ${isAdmin ? `<button onclick="deleteMessage('${key}')">Удалить</button>` : ''}
-        </div>
-        <div class="message-text">${msg.text}</div>
-      `;
-      messagesDiv.appendChild(div);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
-
-    // Отправка сообщения
+    // Отправка
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (!currentUser) return alert('Сначала войди');
 
-      if (!auth.currentUser) {
-        alert('Сначала войди');
-        return;
-      }
-
-      const nick = nicknameInput.value.trim() || auth.currentUser.displayName || 'Anonymous';
+      const nick = nicknameInput.value.trim() || currentUser.displayName || 'Anonymous';
       const text = messageInput.value.trim();
       if (!text) return;
 
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-      messagesRef.push({
+      const chatPath = currentChat === 'global' ? 'korbon-chat' : `dm/${[currentUser.uid, currentChat].sort().join('_')}`;
+      db.ref(chatPath).push({
+        uid: currentUser.uid,
         nick,
         text,
-        time,
-        uid: auth.currentUser.uid
-      }).catch((error) => {
-        console.error('Ошибка отправки:', error);
-        alert('Не удалось отправить');
+        time
       });
 
       messageInput.value = '';
     });
 
-    // Удаление сообщения
-    function deleteMessage(key) {
-      if (confirm('Удалить сообщение навсегда?')) {
-        messagesRef.child(key).remove().catch((error) => {
-          console.error('Ошибка удаления:', error);
-          alert('Не получилось удалить');
-        });
+    // Удаление
+    function deleteMessage(key, chatPath) {
+      if (confirm('Удалить сообщение?')) {
+        db.ref(chatPath).child(key).remove();
       }
     }
 
     // Локальная очистка
     function clearChat() {
-      if (confirm('Очистить чат только у себя?')) {
-        messagesDiv.innerHTML = '';
-      }
+      if (confirm('Очистить только у себя?')) messagesDiv.innerHTML = '';
     }
   </script>
   <script src="script.js"></script>
