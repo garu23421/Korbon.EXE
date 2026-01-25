@@ -6,6 +6,7 @@
   <title>KorbonEXE — Чат</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
+  <script src="https://js.pusher.com/8.2/pusher.min.js"></script>
 </head>
 <body>
   <canvas id="matrix-canvas"></canvas>
@@ -20,7 +21,6 @@
         <li><a href="about.html">Биография</a></li>
         <li><a href="join.html">Вступить</a></li>
         <li><a href="gallery.html">Галерея</a></li>
-    		<li><a href="voice.html">Общение</a></li>
         <li><a href="chat.html" class="active">Чат</a></li>
       </ul>
     </nav>
@@ -36,7 +36,7 @@
 
     <form id="chat-form" class="chat-form">
       <input type="text" id="nickname" placeholder="Твой ник" value="Anonymous" maxlength="20">
-      <input type="text" id="message" placeholder="Напиши сообщение..." required autocomplete="off">
+      <input type="text" id="message" placeholder="Сообщение..." required autocomplete="off">
       <button type="submit" class="submit-btn">Отправить</button>
     </form>
 
@@ -48,31 +48,32 @@
   </footer>
 
   <script>
+    // Вставь свои ключи от Pusher
+    Pusher.logToConsole = true;
+    const pusher = new Pusher('YOUR_PUSHER_KEY', {
+      cluster: 'YOUR_PUSHER_CLUSTER'
+    });
+
+    const channel = pusher.subscribe('korbon-chat');
     const messagesDiv = document.getElementById('chat-messages');
     const chatForm = document.getElementById('chat-form');
     const nicknameInput = document.getElementById('nickname');
     const messageInput = document.getElementById('message');
 
-    // Загрузка сообщений
-    function loadMessages() {
-      const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
-      messagesDiv.innerHTML = '';
-      messages.forEach(msg => {
-        const div = document.createElement('div');
-        div.className = 'chat-message';
-        div.innerHTML = `
-          <div class="message-header">
-            <strong>${msg.nick}</strong>
-            <small>${msg.time}</small>
-          </div>
-          <div class="message-text">${msg.text}</div>
-        `;
-        messagesDiv.appendChild(div);
-      });
+    // Загрузка сообщений при подключении
+    channel.bind('new-message', (data) => {
+      const div = document.createElement('div');
+      div.className = 'chat-message';
+      div.innerHTML = `
+        <div class="message-header">
+          <strong>${data.nick}</strong>
+          <small>${data.time}</small>
+        </div>
+        <div class="message-text">${data.text}</div>
+      `;
+      messagesDiv.appendChild(div);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    loadMessages();
+    });
 
     // Отправка сообщения
     chatForm.addEventListener('submit', (e) => {
@@ -81,30 +82,28 @@
       const text = messageInput.value.trim();
       if (!text) return;
 
-      const messages = JSON.parse(localStorage.getItem('korbonChat')) || [];
-      const time = new Date().toLocaleString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit',
-        day: '2-digit',
-        month: '2-digit'
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      fetch('https://YOUR_PUSHER_APP_ID.pusherapp.com/trigger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+    app_id = "2106536"
+    key = "9c5cc01d01dc7c4dad38"
+    secret = "e65dd9efe19332aeee21"
+    cluster = "eu"
+          data: { nick, text, time }
+        })
       });
 
-      messages.push({ nick, text, time });
-      localStorage.setItem('korbonChat', JSON.stringify(messages));
-
       messageInput.value = '';
-      loadMessages();
     });
 
-    // Очистка чата
+    // Очистка чата (локально)
     function clearChat() {
-      if (confirm('Очистить весь чат? Это действие нельзя отменить.')) {
-        localStorage.removeItem('korbonChat');
-        loadMessages();
-      }
+      if (confirm('Очистить чат?')) messagesDiv.innerHTML = '';
     }
   </script>
   <script src="script.js"></script>
 </body>
 </html>
-
