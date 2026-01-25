@@ -39,27 +39,26 @@
     <p>© 2026 KorbonEXE. All rights reserved. .EXE не прощает ошибок.</p>
   </footer>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+ <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
+  const supabase = createClient('https://dirtfyjgmkzzzlclktcx.supabase.co', 'sb_secret_kNtTVPtuwKNQgkvbKDPGXQ_IKtXRS8H');
 
-    const discordLogin = document.getElementById('discord-login');
-    discordLogin.addEventListener('click', async () => {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'discord',
-        options: {
-          redirectTo: 'https://garu23421.github.io/Korbon.EXE/profile.html' // Прямой redirect на профиль
-        }
-      });
-
-      if (error) {
-        document.getElementById('auth-message').textContent = 'Ошибка: ' + error.message;
-        document.getElementById('auth-message').classList.add('error');
-        document.getElementById('auth-message').classList.remove('hidden');
+  const discordLogin = document.getElementById('discord-login');
+  discordLogin.addEventListener('click', async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options: {
+        redirectTo: window.location.origin + '/profile.html' // Динамически — всегда правильный домен
       }
     });
-  </script>
+
+    if (error) {
+      alert('Ошибка авторизации: ' + error.message);
+    }
+  });
+</script>
   <script src="script.js"></script>
 </body>
 </html>
+
