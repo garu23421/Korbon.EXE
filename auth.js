@@ -60,7 +60,44 @@ if (loginForm) {
   });
 }
 
+// ... (весь предыдущий код остаётся)
+
+// В разделе профиля (editForm)
 if (editForm) {
+  // ... (загрузка данных)
+
+  editForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const newStatus = document.getElementById('new-status').value.trim() || 'Новобранец';
+    let newAvatar = document.getElementById('avatar-url').value.trim();
+
+    const fileInput = document.getElementById('avatar-file');
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        newAvatar = event.target.result; // base64
+        saveProfile(newStatus, newAvatar);
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      saveProfile(newStatus, newAvatar);
+    }
+  });
+
+  function saveProfile(status, avatar) {
+    user.status = status;
+    user.avatar = avatar || user.avatar || '/default-avatar.png';
+
+    users[currentUser] = user;
+    localStorage.setItem('korbonUsers', JSON.stringify(users));
+
+    document.getElementById('status-display').textContent = status;
+    document.getElementById('avatar-preview').src = user.avatar;
+
+    alert('Профиль обновлён!');
+  }
+}
   const currentUser = localStorage.getItem('currentUser');
   if (!currentUser) {
     window.location.href = 'login.html';
