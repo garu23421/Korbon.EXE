@@ -50,8 +50,8 @@
   <script>
     // Вставь свои ключи от Pusher
     Pusher.logToConsole = true;
-    const pusher = new Pusher('YOUR_PUSHER_KEY', {
-      cluster: 'YOUR_PUSHER_CLUSTER'
+    const pusher = new Pusher('9c5cc01d01dc7c4dad38', {
+      cluster: 'eu'
     });
 
     const channel = pusher.subscribe('korbon-chat');
@@ -84,7 +84,7 @@
 
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      fetch('https://YOUR_PUSHER_APP_ID.pusherapp.com/trigger', {
+      fetch('https://2106536.pusherapp.com/trigger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -108,4 +108,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
