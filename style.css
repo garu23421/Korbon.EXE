@@ -1169,3 +1169,76 @@ footer {
 .clear-chat:hover {
   background: #ff4d4d;
 }
+/* Аватарки в чате */
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 10px rgba(0,255,157,0.4);
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+/* Сообщения */
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  margin: 1rem 0;
+  animation: messageAppear 0.4s ease-out;
+}
+
+.chat-message.own {
+  flex-direction: row-reverse;
+}
+
+.chat-message.own .chat-avatar {
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+.message-content {
+  max-width: 70%;
+  background: rgba(17,17,17,0.8);
+  border-radius: 12px;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #333;
+}
+
+.chat-message.own .message-content {
+  background: linear-gradient(135deg, rgba(0,255,157,0.12), rgba(0,204,153,0.12));
+  border-color: var(--accent);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.message-header strong {
+  color: var(--accent);
+}
+
+.delete-btn {
+  background: var(--danger);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.delete-btn:hover {
+  background: #ff4d4d;
+}
+
+@keyframes messageAppear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
